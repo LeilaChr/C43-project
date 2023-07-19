@@ -10,10 +10,11 @@
   </head>
   <body class="d-flex flex-column m-4" style="gap: 0.5em">
     <div
-      class="text-center m-auto"
+      class="text-center mx-auto"
       style="width: fit-content; height: fit-content"
     >
-      {% block content %}{% endblock %}
+      <div class="text-center">{% block content %}{% endblock %}</div>
     </div>
+    <div class="mx-auto">{% block form %}{% endblock %}</div>
   </body>
 </html>

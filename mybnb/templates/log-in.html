@@ -1,4 +1,5 @@
-{% extends 'layouts/main.html' %}
+{% extends 'layouts/form.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
 
 {% block title %}
 Log In &ndash; MyBnB
@@ -7,5 +8,10 @@ Log In &ndash; MyBnB
 {% block content %}
 
 <h1>Log In</h1>
+<hr/>
 
+{% endblock %}
+
+{% block form %}
+{{ render_form(form) }}
 {% endblock %}
