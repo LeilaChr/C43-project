@@ -1,0 +1,22 @@
+{% extends 'layouts/main.html' %}
+
+{% block title %}
+Dashboard &ndash; MyBnB
+{% endblock %}
+
+{% block content %}
+
+<h1>Dashboard</h1>
+<p>Welcome back, {{ user.name }}.</p>
+
+<a class="btn btn-primary mx-auto" href="/rentals" style="max-width: 20em"
+  >Rentals</a
+>
+<a class="btn btn-primary mx-auto" href="/listings" style="max-width: 20em"
+  >Listings</a
+>
+<a class="btn btn-info text-light mx-auto" href="/my-profile" style="max-width: 20em"
+  >My Profile</a
+>
+
+{% endblock %}

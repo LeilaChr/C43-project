@@ -2,20 +2,27 @@
 {% from 'bootstrap5/form.html' import render_form %}
 
 {% block title %}
-Log In &ndash; MyBnB
+My Profile &ndash; MyBnB
 {% endblock %}
 
 {% block content %}
 
 <div class="d-flex flex-column mb-4">
-  <a class="btn btn-outline-primary" href="/">← Home</a>
+  <a class="btn btn-outline-primary" href="/dashboard">← Dashboard</a>
 </div>
 
-<h1>Log In</h1>
+<h1>My Profile</h1>
 <hr/>
+
+{% if submitted %}
+  <div class="alert alert-success" role="alert">
+    Your changes have been saved.
+  </div>
+{% endif %}
 
 {% endblock %}
 
 {% block form %}
 {{ render_form(form) }}
 {% endblock %}
+
