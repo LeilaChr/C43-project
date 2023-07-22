@@ -14,7 +14,7 @@ My Profile &ndash; MyBnB
 <h1>My Profile</h1>
 <hr/>
 
-{% if submitted %}
+{% if form.validate_on_submit() %}
   <div class="alert alert-success" role="alert">
     Your changes have been saved.
   </div>
