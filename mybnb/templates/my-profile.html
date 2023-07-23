@@ -14,15 +14,16 @@ My Profile &ndash; MyBnB
 <h1>My Profile</h1>
 <hr/>
 
+{% endblock %}
+
+{% block form %}
+
+{{ render_form(form) }}
+
 {% if form.validate_on_submit() %}
-  <div class="alert alert-success" role="alert">
+  <div class="alert alert-success mt-4" role="alert">
     Your changes have been saved.
   </div>
 {% endif %}
 
 {% endblock %}
-
-{% block form %}
-{{ render_form(form) }}
-{% endblock %}
-
