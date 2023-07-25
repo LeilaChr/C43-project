@@ -1,11 +1,13 @@
 -- Drops all project tables.
 
-DROP TABLE Listings;
-DROP TABLE Users;
-DROP TABLE Hosts;
-DROP TABLE Renters;
-DROP TABLE BookingSlots;
-DROP TABLE Availability;
-DROP TABLE Bookings;
-DROP TABLE ListingComments;
-DROP TABLE UserComments;
+USE mybnb;
+
+DROP TABLE IF EXISTS Availability;
+DROP TABLE IF EXISTS ListingComments;
+DROP TABLE IF EXISTS UserComments;
+DROP TABLE IF EXISTS Listings;
+DROP TABLE IF EXISTS Bookings;
+DROP TABLE IF EXISTS BookingSlots;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Hosts;
+DROP TABLE IF EXISTS Renters;

@@ -1,3 +1,5 @@
+{% from 'bootstrap5/utils.html' import render_messages %}
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -21,6 +23,9 @@
     >
       <div class="text-center">{% block content %}{% endblock %}</div>
     </div>
-    <div class="mx-auto">{% block form %}{% endblock %}</div>
+    <div class="mx-auto">
+      {{ render_messages() }}
+      {% block form %}{% endblock %}
+    </div>
   </body>
 </html>
