@@ -17,20 +17,9 @@
 CREATE DATABASE IF NOT EXISTS mybnb;
 USE mybnb;
 
-CREATE TABLE Listings (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  country VARCHAR(31) NOT NULL,
-  city VARCHAR(31) NOT NULL,
-  postal CHAR(6) NOT NULL,
-  address VARCHAR(127) NOT NULL,
-  lat REAL NOT NULL,
-  lon REAL NOT NULL,
-  type VARCHAR(31) NOT NULL,
-  amenities VARCHAR(255) NOT NULL
-);
-
 CREATE TABLE Users (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
+
   sin INTEGER UNIQUE NOT NULL,
   username VARCHAR(63) UNIQUE NOT NULL,
   name VARCHAR(127) NOT NULL,
@@ -40,12 +29,33 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Hosts (
-  user_id INTEGER PRIMARY KEY
+  user_id INTEGER PRIMARY KEY,
+
+  FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 
 CREATE TABLE Renters (
   user_id INTEGER PRIMARY KEY,
-  card_num CHAR(15)
+  card_num CHAR(15),
+
+  FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+
+CREATE TABLE Listings (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  owner_id INTEGER NOT NULL,
+
+  country VARCHAR(31) NOT NULL,
+  city VARCHAR(31) NOT NULL,
+  postal CHAR(6) NOT NULL,
+  address VARCHAR(127) NOT NULL,
+  lat REAL NOT NULL,
+  lon REAL NOT NULL,
+  type VARCHAR(31) NOT NULL,
+  amenities VARCHAR(255) NOT NULL,
+
+  FOREIGN KEY (owner_id) REFERENCES Hosts(user_id)
 );
 
 CREATE TABLE BookingSlots (
