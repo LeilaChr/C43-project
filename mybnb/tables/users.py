@@ -15,17 +15,9 @@ class User(NamedTuple):
     occupation: Optional[str]
 
 
-def current():
-    return (
-        'user_id' in session and query(
-            '''
-                SELECT *
-                FROM Users
-                WHERE id = %(id)s
-            ''',
-            id=session['user_id']
-        ).fetchone() or
-        User(
+def current() -> User:
+    if 'user_id' not in session:
+        return User(
             id=1,
             sin=123456789,
             username='demo',
@@ -34,7 +26,19 @@ def current():
             address=None,
             occupation=None
         )
-    )
+
+    user = query(
+        '''
+            SELECT *
+            FROM Users
+            WHERE id = %(id)s
+        ''',
+        id=session['user_id']
+    ).fetchone()
+
+    if not user:
+        del session['user_id']
+    return user
 
 def sign_up(**env):
     query(
@@ -89,7 +93,3 @@ def update_profile(**env):
             'id': session['user_id']
         }
     )
-    print(session['user_id'], {
-            **env,
-            'id': session['user_id']
-        })

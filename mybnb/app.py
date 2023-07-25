@@ -56,7 +56,7 @@ def sign_up():
         submit = SubmitField('Sign Up')
 
     def on_submit(form):
-        tables.user.sign_up(
+        tables.users.sign_up(
             sin=sanitize.sin(form.sin.data),
 
             name=form.name.data,
@@ -79,7 +79,7 @@ def log_in():
         submit = SubmitField('Log In')
 
     def on_submit(form):
-        tables.user.log_in(username=form.username.data)
+        tables.users.log_in(username=form.username.data)
 
     return form_endpoint(Form, 'log-in.html',
                          next_location='/dashboard',
@@ -87,7 +87,10 @@ def log_in():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html', user=tables.user.current())
+    return render_template(
+        'dashboard.html',
+        user=tables.users.current()
+    )
 
 @app.route('/my-profile', methods=['GET', 'POST'])
 def my_profile():
@@ -107,7 +110,7 @@ def my_profile():
         submit = SubmitField('Save Changes')
 
     def on_submit(form):
-        tables.user.update_profile(
+        tables.users.update_profile(
             sin=sanitize.sin(form.sin.data),
 
             name=form.name.data,
@@ -121,7 +124,7 @@ def my_profile():
 
     form = Form()
     if not form.is_submitted():
-        user = tables.user.current()
+        user = tables.users.current()
 
         form.id.data = user.id
 
@@ -137,6 +140,13 @@ def my_profile():
     return form_endpoint(form, 'my-profile.html',
                          on_submit=on_submit)
 
+@app.route('/my-listings')
+def my_listings():
+    return render_template(
+        'my-listings.html',
+        user=tables.users.current(),
+        listings=tables.listings.owned_by_current_user()
+    )
 
 if __name__ == '__main__':
     app.run()

@@ -1,0 +1,20 @@
+{% extends 'layouts/main.html' %}
+
+{% block title %}
+My Listings &ndash; MyBnB
+{% endblock %}
+
+{% block content %}
+
+<h1>My Listings</h1>
+<p>Listed by {{ user.name }}</p>
+
+<ul>
+  {% for listing in listings %}
+    <li>
+      {{ listing.id }} {{ listing.type }} {{ listing.city }} {{ listing.postal }}
+    </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
