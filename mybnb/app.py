@@ -5,6 +5,7 @@ from flask_wtf import FlaskForm
 from mysql.connector import IntegrityError, DataError
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
+from datetime import datetime, timedelta
 
 from . import tables, sanitize
 
@@ -35,7 +36,23 @@ def form_endpoint(form, template_path: str, on_submit: callable, next_location: 
 
     return render_template(template_path, form=form, **template_args)
 
+def validate_dob(field):
+    if not field.data:
+        return
+    try:
+        dob_date = datetime.strptime(field.data, "%Y-%m-%d").date()
+    except ValueError:
+        raise ValidationError("Invalid date format. Please use YYYY-MM-DD.")
 
+    current_date = datetime.now().date()
+    max_dob_date = current_date - timedelta(days=365 * 100)
+
+    if dob_date >= current_date:
+        raise ValidationError("Date of Birth cannot be in the future.")
+
+    if dob_date <= max_dob_date:
+        raise ValidationError("Date of Birth should be less than 100 years ago.")
+        
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -43,10 +60,10 @@ def home():
 @app.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
     class Form(FlaskForm):
-        sin = StringField('SIN', validators=[DataRequired(), Regexp(sanitize.sin_pattern, 0, 'Must have the form xxx-xxx-xxx.')])
+        sin = StringField('SIN', validators=[DataRequired(), Regexp(sanitize.sin_pattern, 0, 'Must have the form xxx-xxx-xxx.')], render_kw={"placeholder": "xxx-xxx-xxx"})
 
         name = StringField('Name', validators=[DataRequired(), Length(1, 63)])
-        dob = StringField('Date of Birth', validators=[DataRequired(), Length(1, 15)])
+        dob = StringField('Date of Birth', validators=[DataRequired(), Length(1, 15)], render_kw={"placeholder": "YYYY-MM-DD"})
         address = StringField('Address', validators=[Length(0, 127)])
         occupation = StringField('Occupation', validators=[Length(0, 31)])
 
@@ -54,8 +71,9 @@ def sign_up():
         password = PasswordField('Choose a Password', validators=[Length(0, 63)])
 
         submit = SubmitField('Sign Up')
-
+    
     def on_submit(form):
+        validate_dob(form.dob)
         tables.users.sign_up(
             sin=sanitize.sin(form.sin.data),
 
@@ -110,6 +128,7 @@ def my_profile():
         submit = SubmitField('Save Changes')
 
     def on_submit(form):
+        validate_dob(form.dob)
         tables.users.update_profile(
             sin=sanitize.sin(form.sin.data),
 
