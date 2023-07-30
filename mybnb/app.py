@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_session import Session
 from flask_wtf import FlaskForm
 from mysql.connector import IntegrityError, DataError
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, FloatField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
 from datetime import datetime, timedelta
 
@@ -165,6 +165,67 @@ def my_listings():
         'my-listings.html',
         user=tables.users.current(),
         listings=tables.listings.owned_by_current_user()
+    )
+
+@app.route('/listings/<id>/edit', methods=['GET', 'POST'])
+def listing(id):
+    class Form(FlaskForm):
+        id = StringField('Listing ID', render_kw={'readonly': True})
+
+        country = StringField('Country', validators=[Length(1, 31)])
+        city = StringField('City', validators=[Length(1, 31)])
+        postal = StringField('Postal', validators=[Length(6, 6)])
+        address = StringField('Address', validators=[Length(0, 127)])
+
+        lat = FloatField('Latitude', validators=[DataRequired()])
+        lon = FloatField('Longitude', validators=[DataRequired()])
+
+        type = StringField('Type', validators=[Length(1, 31)])
+        amenities = StringField('Amenities', validators=[Length(1, 255)])
+
+        submit = SubmitField('Save Changes')
+
+    def on_submit(form):
+        tables.listings.update(
+            id=id,
+
+            country=form.country.data,
+            city=form.city.data,
+            postal=form.postal.data,
+            address=form.address.data,
+
+            lat=form.lat.data,
+            lon=form.lon.data,
+
+            type=form.type.data,
+            amenities=form.amenities.data,
+        )
+        flash('Your changes have been saved.', 'success')
+
+    listing = tables.listings.for_id(id).fetchone()
+
+    form = Form()
+    if not form.is_submitted():
+        form.id.data = listing.id
+
+        form.country.data = listing.country
+        form.city.data = listing.city
+        form.postal.data = listing.postal
+        form.address.data = listing.address
+
+        form.lat.data = listing.lat
+        form.lon.data = listing.lon
+
+        form.type.data = listing.type
+        form.amenities.data = listing.amenities
+
+    return form_endpoint(
+        form, 'listing-edit.html',
+        on_submit=on_submit,
+        template_args={
+            'user': tables.users.current(),
+            'listing': listing
+        }
     )
 
 if __name__ == '__main__':

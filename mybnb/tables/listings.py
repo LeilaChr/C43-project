@@ -35,3 +35,33 @@ def owned_by_current_user():
         ''',
         owner_id=users.current().id
     )
+
+def for_id(id):
+    return query(
+        '''
+            SELECT *
+            FROM Listings
+            WHERE id = %(id)s
+        ''',
+        id=id
+    )
+
+def update(**env):
+    query(
+        '''
+            UPDATE Listings
+            SET
+                country = %(country)s,
+                city = %(city)s,
+                postal = %(postal)s,
+                address = %(address)s,
+
+                lat = %(lat)s,
+                lon = %(lon)s,
+
+                type = %(type)s,
+                amenities = %(amenities)s
+            WHERE id = %(id)s
+        ''',
+        **env
+    )

@@ -12,7 +12,7 @@ My Listings &ndash; MyBnB
 <ul>
   {% for listing in listings %}
     <li>
-      {{ listing.id }} {{ listing.type }} {{ listing.city }} {{ listing.postal }}
+      <a href="/listings/{{ listing.id }}/edit">{{ listing.type }} in {{ listing.city }} at {{ listing.postal }}</a>
     </li>
   {% endfor %}
 </ul>
