@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_session import Session
 from flask_wtf import FlaskForm
 from mysql.connector import IntegrityError, DataError
-from wtforms import StringField, PasswordField, FloatField, SubmitField
+from wtforms import StringField, PasswordField, FloatField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
 from datetime import datetime, timedelta
 
@@ -180,8 +180,62 @@ def listing(id):
         lat = FloatField('Latitude', validators=[DataRequired()])
         lon = FloatField('Longitude', validators=[DataRequired()])
 
-        type = StringField('Type', validators=[Length(1, 31)])
-        amenities = StringField('Amenities', validators=[Length(1, 255)])
+        type = SelectField(
+            'Type',
+            choices=[
+                'Apartment',
+                'House',
+                'Bed and breakfast',
+                'Boutique hotel',
+                'Bungalow',
+                'Cabin',
+                'Chalet',
+                'Condominium',
+                'Cottage',
+                'Guest suite',
+                'Guesthouse',
+                'Hostel',
+                'Hotel',
+                'Kezhan',
+                'Loft',
+                'Resort',
+                'Serviced apartment',
+                'Townhouse',
+                'Villa',
+            ])
+        amenities = SelectMultipleField(
+            'Amenities (select multiple)',
+            choices=[
+                'Wifi',
+                'Kitchen',
+                'Washer',
+                'Air conditioning',
+                'Iron',
+                'Free parking',
+                'Dryer',
+                'Heating',
+                'Dedicated workspace',
+                'TV',
+                'Hair dryer',
+                'Pool',
+                'Hot tub',
+                'EV charger',
+                'Crib',
+                'Gym',
+                'BBQ grill',
+                'Breakfast',
+                'Indoor fireplace',
+                'Smoking allowed',
+                'Beachfront',
+                'Waterfront',
+                'Ski-in/ski-out',
+                'Smoke alarm',
+                'Carbon monoxide alarm',
+            ],
+            render_kw={
+                'size': '10'
+            }
+        )
 
         submit = SubmitField('Save Changes')
 
@@ -198,7 +252,7 @@ def listing(id):
             lon=form.lon.data,
 
             type=form.type.data,
-            amenities=form.amenities.data,
+            amenities=', '.join(form.amenities.data),
         )
         flash('Your changes have been saved.', 'success')
 
@@ -217,7 +271,7 @@ def listing(id):
         form.lon.data = listing.lon
 
         form.type.data = listing.type
-        form.amenities.data = listing.amenities
+        form.amenities.data = listing.amenities.split(', ')
 
     return form_endpoint(
         form, 'listing-edit.html',
