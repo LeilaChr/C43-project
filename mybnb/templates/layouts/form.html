@@ -21,10 +21,15 @@
       class="text-center mx-auto"
       style="width: fit-content; height: fit-content"
     >
-      <div class="text-center">{% block content %}{% endblock %}</div>
-    </div>
-    <div class="mx-auto">
+      <div>{% block top %}{% endblock %}</div>
+      <hr/>
+
       {{ render_messages() }}
+
+      <div>{% block content %}{% endblock %}</div>
+    </div>
+
+    <div class="mx-auto">
       {% block form %}{% endblock %}
     </div>
   </body>

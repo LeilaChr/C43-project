@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_session import Session
 from flask_wtf import FlaskForm
 from mysql.connector import IntegrityError, DataError
-from wtforms import StringField, PasswordField, FloatField, SelectField, SelectMultipleField, SubmitField
+from wtforms import StringField, PasswordField, IntegerField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
 from datetime import datetime, timedelta
 
@@ -115,6 +115,7 @@ def dashboard():
     )
 
 @app.route('/my-profile', methods=['GET', 'POST'])
+@app.route('/my-profile/delete', methods=['POST'])
 def my_profile():
     class Form(FlaskForm):
         id = StringField('User ID', render_kw={'readonly': True})
@@ -130,25 +131,32 @@ def my_profile():
         password = PasswordField('Password', validators=[Length(0, 63)])
 
         submit = SubmitField('Save Changes')
+        delete = SubmitField('Delete Account', render_kw={'class': 'btn-light btn-outline-danger', 'formaction': '/my-profile/delete'})
+
+    is_delete_request = (request.path.lower() == '/my-profile/delete')
 
     def on_submit(form):
-        validate_dob(form.dob)
-        tables.users.update_profile(
-            sin=sanitize.sin(form.sin.data),
+        if is_delete_request:
+            tables.users.delete_current()
+            flash('Your account was deleted.', 'success')
+        else:
+            validate_dob(form.dob)
+            tables.users.update_profile(
+                sin=sanitize.sin(form.sin.data),
 
-            name=form.name.data,
-            dob=form.dob.data,
-            address=form.address.data,
-            occupation=form.occupation.data,
+                name=form.name.data,
+                dob=form.dob.data,
+                address=form.address.data,
+                occupation=form.occupation.data,
 
-            username=form.username.data
-        )
-        flash('Your changes have been saved.', 'success')
+                username=form.username.data
+            )
+            flash('Your changes have been saved.', 'success')
+
+    user = tables.users.current()
 
     form = Form()
     if not form.is_submitted():
-        user = tables.users.current()
-
         form.id.data = user.id
 
         form.sin.data = str(user.sin)
@@ -160,8 +168,14 @@ def my_profile():
 
         form.username.data = user.username
 
-    return form_endpoint(form, 'my-profile.html',
-                         on_submit=on_submit)
+    return form_endpoint(
+        form, 'my-profile.html',
+        on_submit=on_submit,
+        next_location=('/' if is_delete_request else None),
+        template_args={
+            'user': user
+        }
+    )
 
 @app.route('/my-listings')
 def my_listings():

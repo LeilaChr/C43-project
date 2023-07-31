@@ -4,7 +4,7 @@
 My Listings &ndash; MyBnB
 {% endblock %}
 
-{% block content %}
+{% block top %}
 
 <div class="d-flex flex-column mb-4">
   <a class="btn btn-outline-primary" href="/dashboard">← Dashboard</a>
@@ -12,6 +12,10 @@ My Listings &ndash; MyBnB
 
 <h1>My Listings</h1>
 <p>Listed by {{ user.name }}</p>
+
+{% endblock %}
+
+{% block content %}
 
 <ul>
   {% for listing in listings %}

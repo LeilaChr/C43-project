@@ -93,3 +93,15 @@ def update_profile(**env):
             'id': session['user_id']
         }
     )
+
+def delete_current():
+    if 'user_id' not in session:
+        raise ValidationError('You are browsing as a demo user; please log in to continue.')
+    
+    query(
+        '''
+            DELETE FROM Users
+            WHERE id = %(id)s
+        ''',
+        id=session['user_id']
+    )

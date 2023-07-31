@@ -4,7 +4,7 @@
 Dashboard &ndash; MyBnB
 {% endblock %}
 
-{% block content %}
+{% block top %}
 
 <div class="d-flex flex-column mb-4">
   <a class="btn btn-outline-primary" href="/">← MyBnB Home</a>
@@ -13,6 +13,10 @@ Dashboard &ndash; MyBnB
 
 <h1>Dashboard</h1>
 <p>Welcome back, {{ user.name }}.</p>
+
+{% endblock %}
+
+{% block content %}
 
 <a class="btn btn-primary mx-auto" href="/listings" style="max-width: 20em"
   >Search Listings</a
