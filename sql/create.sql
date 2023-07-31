@@ -60,17 +60,16 @@ CREATE TABLE Listings (
 
 CREATE TABLE BookingSlots (
   id INTEGER PRIMARY KEY,
-  date DATE NOT NULL
+  listing_id INTEGER,
+  date DATE NOT NULL,
+
+  FOREIGN KEY (listing_id) REFERENCES Listings(id)
 );
 
 CREATE TABLE Availability (
-  listing_id INTEGER,
-  slot_id INTEGER,
-  PRIMARY KEY (listing_id, slot_id),
-
+  slot_id INTEGER PRIMARY KEY,
   rental_price REAL NOT NULL,
 
-  FOREIGN KEY (listing_id) REFERENCES Listings(id),
   FOREIGN KEY (slot_id) REFERENCES BookingSlots(id)
 );
 
@@ -79,8 +78,7 @@ CREATE TABLE Bookings (
   renter_id INTEGER NOT NULL,
   cancelled BOOLEAN,
 
-  FOREIGN KEY (slot_id) REFERENCES BookingSlots(id),
-  FOREIGN KEY (renter_id) REFERENCES Renters(user_id)
+  FOREIGN KEY (slot_id) REFERENCES Availability(slot_id)
 );
 
 CREATE TABLE ListingComments (
