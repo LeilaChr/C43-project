@@ -4,7 +4,7 @@ from flask_session import Session
 from flask_wtf import FlaskForm
 from mysql.connector import IntegrityError, DataError
 from wtforms import StringField, PasswordField, IntegerField, FloatField, SelectField, SelectMultipleField, SubmitField
-from wtforms.validators import DataRequired, Length, Regexp, ValidationError
+from wtforms.validators import DataRequired, Length, Regexp, NumberRange, ValidationError
 from datetime import datetime, timedelta
 
 from . import tables, sanitize
@@ -185,8 +185,14 @@ def my_listings():
         listings=tables.listings.owned_by_current_user()
     )
 
-@app.route('/listings/<id>/edit', methods=['GET', 'POST'])
-def listing(id):
+@app.route('/my-listings/<id>/delete', methods=['POST'])
+def listing_delete(id):
+    tables.listings.delete(id)
+    flash('Listing was deleted.', 'success')
+    return redirect('/my-listings')
+
+@app.route('/my-listings/<id>/edit', methods=['GET', 'POST'])
+def listing_edit(id):
     class Form(FlaskForm):
         id = StringField('Listing ID', render_kw={'readonly': True})
 
@@ -274,7 +280,7 @@ def listing(id):
         )
         flash('Your changes have been saved.', 'success')
 
-    listing = tables.listings.for_id(id).fetchone()
+    listing = tables.listings.for_id(id)
 
     form = Form()
     if not form.is_submitted():
@@ -297,6 +303,68 @@ def listing(id):
         template_args={
             'user': tables.users.current(),
             'listing': listing
+        }
+    )
+
+@app.route('/my-listings/<id>/schedule')
+def listing_schedule(id):
+    listing = tables.listings.for_id(id)
+
+    return render_template(
+        'listing-schedule.html',
+        user=tables.users.current(),
+        listing=listing,
+        slots=tables.booking_slots.all_for_listing(listing)
+    )
+
+@app.route('/my-listings/<listing_id>/schedule/<slot_id>/delete', methods=['POST'])
+def listing_schedule_delete(listing_id, slot_id):
+    tables.booking_slots.delete(slot_id)
+    flash('Booking slot was deleted.', 'success')
+    return redirect(f'/my-listings/{listing_id}/schedule')
+
+@app.route('/my-listings/<listing_id>/schedule/<slot_id>/retract', methods=['POST'])
+def listing_schedule_retract(listing_id, slot_id):
+    tables.booking_slots.mark_unavailable(slot_id)
+    flash(f'Availability retracted for {tables.booking_slots.for_id(slot_id).date}.', 'success')
+    return redirect(f'/my-listings/{listing_id}/schedule')
+
+@app.route('/my-listings/<listing_id>/schedule/<slot_id>/set-price', methods=['GET', 'POST'])
+def listing_schedule_slot(listing_id, slot_id):
+    class Form(FlaskForm):
+        listing_id = StringField('Listing ID', render_kw={'readonly': True})
+        slot_id = StringField('Slot ID', render_kw={'readonly': True})
+
+        rental_price = FloatField('Rental Price', validators=[NumberRange(min=0)])
+
+        submit = SubmitField('Post Offer', render_kw={'class': 'btn-success'})
+
+    slot = tables.booking_slots.for_id(slot_id)
+    listing = slot.listing
+
+    def on_submit(form):
+        tables.booking_slots.update(
+            id=slot.id,
+
+            rental_price=form.rental_price.data
+        )
+        flash(f'Made available on {slot.date}.', 'success')
+
+    form = Form()
+    if not form.is_submitted():
+        form.listing_id.data = listing.id
+        form.slot_id.data = slot.id
+
+        form.rental_price.data = slot.rental_price
+
+    return form_endpoint(
+        form, 'listing-schedule-slot.html',
+        on_submit=on_submit,
+        next_location=f'/my-listings/{listing_id}/schedule',
+        template_args={
+            'user': tables.users.current(),
+            'listing': listing,
+            'slot': slot
         }
     )
 

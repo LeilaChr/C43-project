@@ -63,14 +63,16 @@ CREATE TABLE BookingSlots (
   listing_id INTEGER,
   date DATE NOT NULL,
 
-  FOREIGN KEY (listing_id) REFERENCES Listings(id)
+  FOREIGN KEY (listing_id) REFERENCES Listings(id),
+  UNIQUE (listing_id, date)
 );
 
 CREATE TABLE Availability (
   slot_id INTEGER PRIMARY KEY,
   rental_price REAL NOT NULL,
 
-  FOREIGN KEY (slot_id) REFERENCES BookingSlots(id)
+  FOREIGN KEY (slot_id) REFERENCES BookingSlots(id),
+  UNIQUE (slot_id, rental_price)
 );
 
 CREATE TABLE Bookings (

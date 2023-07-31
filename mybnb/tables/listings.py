@@ -44,7 +44,7 @@ def for_id(id):
             WHERE id = %(id)s
         ''',
         id=id
-    )
+    ).fetchone()
 
 def update(**env):
     query(
@@ -64,4 +64,13 @@ def update(**env):
             WHERE id = %(id)s
         ''',
         **env
+    )
+
+def delete(id):
+    query(
+        '''
+            DELETE FROM Listings
+            WHERE id = %(id)s
+        ''',
+        id=id
     )

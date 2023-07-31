@@ -1,1 +1,1 @@
-from . import listings, users
+from . import booking_slots, listings, users

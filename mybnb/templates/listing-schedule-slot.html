@@ -2,16 +2,19 @@
 {% from 'bootstrap5/form.html' import render_form %}
 
 {% block title %}
-Edit Listing &ndash; MyBnB
+Set Listing Price &ndash; MyBnB
 {% endblock %}
 
 {% block top %}
 
 <div class="d-flex flex-column mb-4">
-  <a class="btn btn-outline-primary" href="/my-listings">← My Listings</a>
+  <a class="btn btn-outline-primary" href="/my-listings/{{ listing.id }}/schedule">← Schedule Listing</a>
 </div>
 
-<h1>Edit Listing</h1>
+<h1>Set Price</h1>
+<h4>{{ slot.date }}</h4>
+
+<p>{{ listing.type }} in {{ listing.city }} at {{ listing.postal }}</p>
 
 {% endblock %}
 
