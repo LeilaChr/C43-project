@@ -45,16 +45,16 @@ def validate_dob(field):
         raise ValidationError("Invalid date format. Please use YYYY-MM-DD.")
 
     current_date = datetime.now().date()
-    min_dob_date = current_date - timedelta(days=365 * 18)
-    max_dob_date = current_date - timedelta(days=365 * 100)
+    max_dob_date = current_date - timedelta(days=365 * 18)
+    min_dob_date = current_date - timedelta(days=365 * 100)
 
     if dob_date >= current_date:
         raise ValidationError("Date of Birth cannot be in the future.")
 
-    if dob_date >= min_dob_date:
+    if dob_date >= max_dob_date:
         raise ValidationError("Date of Birth should be at least 18 years ago.")
 
-    if dob_date <= max_dob_date:
+    if dob_date <= min_dob_date:
         raise ValidationError("Date of Birth should be less than 100 years ago.")
         
 @app.route('/')
