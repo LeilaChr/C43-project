@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap5
 from flask_session import Session
 from flask_wtf import FlaskForm
 from mysql.connector import IntegrityError, DataError
-from wtforms import StringField, PasswordField, IntegerField, SelectField, SelectMultipleField, SubmitField
+from wtforms import StringField, PasswordField, IntegerField, FloatField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
 from datetime import datetime, timedelta
 
