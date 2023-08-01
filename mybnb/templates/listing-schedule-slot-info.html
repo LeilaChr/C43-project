@@ -1,0 +1,83 @@
+{% extends 'layouts/main.html' %}
+
+{% block title %}
+Day Info &ndash; MyBnB
+{% endblock %}
+
+{% block top %}
+
+<div class="d-flex flex-column mb-4">
+  <a class="btn btn-outline-primary" href="/my-listings/{{ listing.id }}/schedule">← Schedule Listing</a>
+</div>
+
+<h1 class="text-info">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16" style="transform: scale(1.75)">
+    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+  </svg>
+</h1>
+
+{% endblock %}
+
+{% block content %}
+
+<h4>Listing</h4>
+
+<p>{{ listing.type }} in {{ listing.city }} at {{ listing.postal }}</p>
+
+<p><a class="btn btn-sm btn-outline-dark" href="/my-listings/{{ listing.id }}/edit">Edit</a></p>
+
+<h4>Scheduled Day</h4>
+
+<p>{{ slot.date }}</p>
+
+<h4>Price</h4>
+
+{% if slot.rental_price != None %}
+  <p class="text-success">{{ "${:,.0f}".format(slot.rental_price) }}/night</p>
+  {% if not renter %}
+    <p>
+      <form class="btn-group">
+        <a class="btn btn-sm btn-outline-dark" href="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/set-price">Change</a>
+        <button type="submit" formaction="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/retract" formmethod="POST" class="btn btn-sm btn-outline-danger ps-3 pe-3">
+          Retract
+        </button>
+      </form>
+    </p>
+  {% endif %}
+{% else %}
+  <p class="text-danger">Not on offer.</p>
+  <p><a class="btn btn-sm btn-outline-success" href="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/set-price">Set</a></p>
+{% endif %}
+
+{% if slot.rental_price != None %}
+  <h4>Booked by</h4>
+
+  {% if renter %}
+    <p class="text-info">{{ renter.name }} ({{ renter.username }})</p>
+    <p>
+      <form>
+        <button type="submit" formaction="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/cancel" formmethod="POST" class="btn btn-sm btn-outline-danger ps-3 pe-3">
+          Cancel Booking
+        </button>
+      </form>
+    </p>
+  {% else %}
+    <p class="text-success">Not booked.</p>
+  {% endif %}
+{% endif %}
+
+<h4>Cancellations</h4>
+
+{% if cancellations %}
+  <ul class="list-group">
+    {% for cancellation in cancellations %}
+      <li class="list-group-item text-danger">
+        {{ cancellation.name }} ({{ cancellation.username }}) @ {{ "${:,.0f}".format(cancellation.rental_price) }}/night
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  None!
+{% endif %}
+
+{% endblock %}

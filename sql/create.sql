@@ -31,14 +31,14 @@ CREATE TABLE Users (
 CREATE TABLE Hosts (
   user_id INTEGER PRIMARY KEY,
 
-  FOREIGN KEY (user_id) REFERENCES Users(id)
+  FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Renters (
   user_id INTEGER PRIMARY KEY,
   card_num CHAR(15),
 
-  FOREIGN KEY (user_id) REFERENCES Users(id)
+  FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 
@@ -55,7 +55,7 @@ CREATE TABLE Listings (
   type VARCHAR(31) NOT NULL,
   amenities VARCHAR(255) NOT NULL,
 
-  FOREIGN KEY (owner_id) REFERENCES Hosts(user_id)
+  FOREIGN KEY (owner_id) REFERENCES Hosts(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE BookingSlots (
@@ -63,24 +63,26 @@ CREATE TABLE BookingSlots (
   listing_id INTEGER,
   date DATE NOT NULL,
 
-  FOREIGN KEY (listing_id) REFERENCES Listings(id),
+  FOREIGN KEY (listing_id) REFERENCES Listings(id) ON DELETE CASCADE,
   UNIQUE (listing_id, date)
 );
 
 CREATE TABLE Availability (
-  slot_id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  slot_id INTEGER,
   rental_price REAL NOT NULL,
+  retracted BOOLEAN DEFAULT 0,
 
-  FOREIGN KEY (slot_id) REFERENCES BookingSlots(id),
-  UNIQUE (slot_id, rental_price)
+  FOREIGN KEY (slot_id) REFERENCES BookingSlots(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Bookings (
-  slot_id INTEGER PRIMARY KEY,
+  availability_id INTEGER PRIMARY KEY,
   renter_id INTEGER NOT NULL,
-  cancelled BOOLEAN,
+  cancelled BOOLEAN DEFAULT 0,
 
-  FOREIGN KEY (slot_id) REFERENCES Availability(slot_id)
+  FOREIGN KEY (availability_id) REFERENCES Availability(id) ON DELETE CASCADE,
+  FOREIGN KEY (renter_id) REFERENCES Renters(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE ListingComments (
@@ -88,8 +90,8 @@ CREATE TABLE ListingComments (
   listing_id INTEGER,
   PRIMARY KEY (renter_id, listing_id),
 
-  FOREIGN KEY (renter_id) REFERENCES Renters(user_id),
-  FOREIGN KEY (listing_id) REFERENCES Listings(id),
+  FOREIGN KEY (renter_id) REFERENCES Renters(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (listing_id) REFERENCES Listings(id) ON DELETE CASCADE,
 
   comment VARCHAR(511),
   rating INTEGER
@@ -100,8 +102,8 @@ CREATE TABLE UserComments (
   host_id INTEGER,
   PRIMARY KEY (renter_id, host_id),
 
-  FOREIGN KEY (renter_id) REFERENCES Renters(user_id),
-  FOREIGN KEY (host_id) REFERENCES Hosts(user_id),
+  FOREIGN KEY (renter_id) REFERENCES Renters(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (host_id) REFERENCES Hosts(user_id) ON DELETE CASCADE,
 
   renter_comment VARCHAR(511),
   renter_rating INTEGER,

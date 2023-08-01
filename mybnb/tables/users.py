@@ -40,6 +40,16 @@ def current() -> User:
         del session['user_id']
     return user
 
+def for_id(id) -> User:
+    return query(
+        '''
+            SELECT *
+            FROM Users
+            WHERE id = %(id)s
+        ''',
+        id=id
+    ).fetchone()
+
 def sign_up(**env):
     query(
         '''

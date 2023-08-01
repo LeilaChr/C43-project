@@ -329,8 +329,14 @@ def listing_schedule_retract(listing_id, slot_id):
     flash(f'Availability retracted for {tables.booking_slots.for_id(slot_id).date}.', 'success')
     return redirect(f'/my-listings/{listing_id}/schedule')
 
+@app.route('/my-listings/<listing_id>/schedule/<slot_id>/cancel', methods=['POST'])
+def listing_schedule_cancel(listing_id, slot_id):
+    tables.bookings.delete(slot_id)
+    flash(f'Booking on {tables.booking_slots.for_id(slot_id).date} cancelled.', 'success')
+    return redirect(f'/my-listings/{listing_id}/schedule')
+
 @app.route('/my-listings/<listing_id>/schedule/<slot_id>/set-price', methods=['GET', 'POST'])
-def listing_schedule_slot(listing_id, slot_id):
+def listing_schedule_slot_set_price(listing_id, slot_id):
     class Form(FlaskForm):
         listing_id = StringField('Listing ID', render_kw={'readonly': True})
         slot_id = StringField('Slot ID', render_kw={'readonly': True})
@@ -358,7 +364,7 @@ def listing_schedule_slot(listing_id, slot_id):
         form.rental_price.data = slot.rental_price
 
     return form_endpoint(
-        form, 'listing-schedule-slot.html',
+        form, 'listing-schedule-slot-set-price.html',
         on_submit=on_submit,
         next_location=f'/my-listings/{listing_id}/schedule',
         template_args={
@@ -366,6 +372,20 @@ def listing_schedule_slot(listing_id, slot_id):
             'listing': listing,
             'slot': slot
         }
+    )
+
+@app.route('/my-listings/<listing_id>/schedule/<slot_id>/info')
+def listing_schedule_slot_info(listing_id, slot_id):
+    slot = tables.booking_slots.for_id(slot_id)
+    cancellations = tables.bookings.cancellations(slot_id)
+
+    return render_template(
+        'listing-schedule-slot-info.html',
+        user=tables.users.current(),
+        listing=slot.listing,
+        slot=slot,
+        renter=(slot.renter_id and tables.users.for_id(slot.renter_id)),
+        cancellations=cancellations
     )
 
 def add_booking_slots(listing_id, start_date: date, end_date: date):
@@ -409,6 +429,6 @@ def listing_schedule_add_slots(listing_id):
             'listing': tables.listings.for_id(listing_id)
         }
     )
-    
+
 if __name__ == '__main__':
     app.run()
