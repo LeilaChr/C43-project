@@ -1,0 +1,28 @@
+{% extends 'layouts/form.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}
+Add Days &ndash; MyBnB
+{% endblock %}
+
+{% block top %}
+
+<div class="d-flex flex-column mb-4">
+  <a class="btn btn-outline-primary" href="/my-listings/{{ listing.id }}/schedule">← Schedule Listing</a>
+</div>
+
+<h1>Add Days</h1>
+
+<p>{{ listing.type }} in {{ listing.city }} at {{ listing.postal }}</p>
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block form %}
+
+{{ render_form(form) }}
+
+{% endblock %}

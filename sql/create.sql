@@ -59,7 +59,7 @@ CREATE TABLE Listings (
 );
 
 CREATE TABLE BookingSlots (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   listing_id INTEGER,
   date DATE NOT NULL,
 

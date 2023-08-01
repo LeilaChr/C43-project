@@ -32,15 +32,21 @@ Schedule Listing &ndash; MyBnB
         <form class="btn-group ms-4">
           {% if slot.rental_price == None %}
             <a href="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/set-price" class="btn btn-sm btn-outline-success ps-3 pe-3">Set Price</a>
-            <button type="submit" formaction="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/delete" formmethod="POST" class="btn btn-sm btn-outline-dark ps-3 pe-3">Delete</a>
+            <button type="submit" formaction="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/delete" formmethod="POST" class="btn btn-sm btn-outline-dark ps-3 pe-3">Delete</button>
           {% else %}
             <a href="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/set-price" class="btn btn-sm btn-outline-dark ps-3 pe-3">Change Price</a>
-            <button type="submit" formaction="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/retract" formmethod="POST" class="btn btn-sm btn-outline-danger ps-3 pe-3">Retract</a>
+            <button type="submit" formaction="/my-listings/{{ listing.id }}/schedule/{{ slot.id }}/retract" formmethod="POST" class="btn btn-sm btn-outline-danger ps-3 pe-3">Retract</button>
           {% endif %}
         </form>
       </div>
     </li>
   {% endfor %}
 </ul>
+
+<form class="btn-group">
+  <button type="submit" formaction="/my-listings/{{ listing.id }}/schedule/add-week-of-slots" formmethod="POST" class="btn btn btn-outline-primary ps-3 pe-3">Add 7 More Days</button>
+  <input type="hidden" name="days" value="7"/>
+  <a href="/my-listings/{{ listing.id }}/schedule/add-slots" class="btn btn-outline-success ps-3 pe-3">Add Days…</a>
+</form>
 
 {% endblock %}

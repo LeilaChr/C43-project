@@ -36,6 +36,21 @@ def all_for_listing(listing: listings.Listing):
     ):
         yield BookingSlot.from_record(slot, listing=listing)
 
+def latest_for_listing(listing: listings.Listing):
+    slot = query(
+        '''
+            SELECT id, listing_id, date, A.rental_price
+            FROM BookingSlots
+            LEFT JOIN Availability A ON A.slot_id = id
+            WHERE
+                listing_id = %(listing_id)s AND
+                date >= ALL(SELECT date FROM BookingSlots WHERE listing_id = %(listing_id)s)
+        ''',
+        listing_id=listing.id
+    ).fetchone()
+
+    return BookingSlot.from_record(slot, listing=listing)
+
 def for_id(id) -> BookingSlot:
     slot = query(
         '''
@@ -48,6 +63,15 @@ def for_id(id) -> BookingSlot:
     ).fetchone()
 
     return BookingSlot.from_record(slot)
+
+def add(**env):
+    query(
+        '''
+            INSERT IGNORE INTO BookingSlots(listing_id, date)
+            VALUES (%(listing_id)s, %(date)s)
+        ''',
+        **env
+    )
 
 def update(**env):
     if 'rental_price' in env:

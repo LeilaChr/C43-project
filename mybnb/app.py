@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 from mysql.connector import IntegrityError, DataError
 from wtforms import StringField, PasswordField, IntegerField, FloatField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import DataRequired, Length, Regexp, NumberRange, ValidationError
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from . import tables, sanitize
 
@@ -368,5 +368,47 @@ def listing_schedule_slot(listing_id, slot_id):
         }
     )
 
+def add_booking_slots(listing_id, start_date: date, end_date: date):
+    for day_offset in range(0, (end_date - start_date).days + 1):
+        tables.booking_slots.add(
+            listing_id=listing_id,
+            date=start_date + timedelta(days=day_offset)
+        )
+
+    flash(f'{start_date} thru {end_date} added to schedule.', 'success')
+
+@app.route('/my-listings/<listing_id>/schedule/add-week-of-slots', methods=['POST'])
+def listing_schedule_add_week_of_slots(listing_id):
+    listing = tables.listings.for_id(listing_id)
+    latest_slot = tables.booking_slots.latest_for_listing(listing)
+
+    start_date = latest_slot.date + timedelta(days=1)
+    end_date = start_date + timedelta(days=6)
+
+    add_booking_slots(listing_id, start_date, end_date)
+
+    return redirect(f'/my-listings/{listing_id}/schedule')
+
+@app.route('/my-listings/<listing_id>/schedule/add-slots', methods=['GET', 'POST'])
+def listing_schedule_add_slots(listing_id):
+    class Form(FlaskForm):
+        start_date = StringField('Start Date', validators=[Length(1, 15)], render_kw={"placeholder": "YYYY-MM-DD"})
+        end_date = StringField('End Date', validators=[Length(1, 15)], render_kw={"placeholder": "YYYY-MM-DD"})
+
+        submit = SubmitField('Add Days to Schedule', render_kw={'class': 'btn-primary'})
+
+    def on_submit(form):
+        add_booking_slots(listing_id, sanitize.date(form.start_date.data), sanitize.date(form.end_date.data))
+    
+    return form_endpoint(
+        Form, 'listing-schedule-add-slots.html',
+        on_submit=on_submit,
+        next_location=f'/my-listings/{listing_id}/schedule',
+        template_args={
+            'user': tables.users.current(),
+            'listing': tables.listings.for_id(listing_id)
+        }
+    )
+    
 if __name__ == '__main__':
     app.run()
