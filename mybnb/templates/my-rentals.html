@@ -1,0 +1,37 @@
+{% extends 'layouts/main.html' %}
+
+{% block title %}
+My Rentals &ndash; MyBnB
+{% endblock %}
+
+{% block top %}
+
+<div class="d-flex flex-column mb-4">
+  <a class="btn btn-outline-primary" href="/dashboard">← Dashboard</a>
+</div>
+
+<h1>My Rentals</h1>
+<p>Rented by {{ user.name }}</p>
+
+{% endblock %}
+
+{% block content %}
+
+<ul class="ps-0">
+  {% for rental in rentals %}
+    <li class="card">
+      <div class="card-body d-flex flex-row align-items-baseline justify-content-between">
+        <h6 class="card-title d-flex flex-column align-items-center">
+            <span class="text-info">{{ rental.date }} &ndash; {{ "${:,.0f}".format(rental.rental_price) }}/night</span>
+            <span class="text-info">At the location {{ rental.address }}, {{ rental.city }}, {{ rental.country }}, {{ rental.postal }}</span>
+            <span class="text-info">With Amenities {{ rental.amenities }}</span>
+        </h6>
+        <form class="btn-group ms-4">
+            <button type="submit" formaction="/my-rentals/{{ rental.slot_id }}/delete" formmethod="POST" class="btn btn-sm btn-outline-danger ps-3 pe-3">Cancel Rental</button>
+        </form>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

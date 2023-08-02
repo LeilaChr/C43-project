@@ -15,7 +15,7 @@ class Bookings(NamedTuple):
     name: str
     rental_price: float
 
-    cancelled: bool = False
+    cancelled: bool = 0
 
 
 def cancellations(slot_id):
@@ -31,32 +31,31 @@ def cancellations(slot_id):
     ).fetchall()
 
 def rentals_for_id(id):
-    slot = query(
+    rental = query(
         '''
-            SELECT slot_id, cancelled, B.date,
-              B.listing.city, B.listing.address, B.listing.postal, 
-              B.listing.amenities, A.rental_price, B.listing.type
+            SELECT slot_id, renter_id, cancelled, date, country, city, address, 
+              postal, amenities, rental_price, type
             FROM Bookings
-            LEFT JOIN Availability A ON A.slot_id = slot_id
+            LEFT JOIN Availability A ON A.id = availability_id
             LEFT JOIN BookingSlots B ON B.id = slot_id
-            WHERE renter_id = %(id)s AND cancelled = FALSE
+            LEFT JOIN Listings L ON L.id = B.listing_id
+            WHERE renter_id = %(id)s AND cancelled = 0
         ''',
         id=id
-    ).fetchone()
+    ).fetchall()
+    return rental
 
-    return slot
-
-def delete(id):
+def delete(slot_id):
     query(
         '''
             UPDATE Bookings
             SET 
-              cancelled = TRUE
+              cancelled=1
             WHERE availability_id IN (
                 SELECT id
                 FROM Availability
-                WHERE slot_id = %(id)s
+                WHERE slot_id = %(slot_id)s
             )
         ''',
-        id=id
+        slot_id=slot_id
     )

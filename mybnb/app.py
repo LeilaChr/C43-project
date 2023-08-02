@@ -430,5 +430,20 @@ def listing_schedule_add_slots(listing_id):
         }
     )
 
+@app.route('/my-rentals')
+def my_rentals():
+    id=tables.users.current().id
+    return render_template(
+        'my-rentals.html',
+        user=tables.users.current(),
+        rentals=tables.bookings.rentals_for_id(id)
+    )
+
+@app.route('/my-rentals/<id>/delete', methods=['POST'])
+def rental_delete(id):
+    tables.bookings.delete(id)
+    flash('Rental was deleted.', 'success')
+    return redirect('/my-rentals')
+
 if __name__ == '__main__':
     app.run()
