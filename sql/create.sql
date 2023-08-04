@@ -75,6 +75,10 @@ CREATE TABLE Availability (
 
   FOREIGN KEY (slot_id) REFERENCES BookingSlots(id) ON DELETE CASCADE
 );
+CREATE VIEW AvailabilityLive AS
+SELECT *
+FROM Availability
+WHERE NOT retracted;
 
 CREATE TABLE Bookings (
   availability_id INTEGER PRIMARY KEY,
@@ -84,6 +88,14 @@ CREATE TABLE Bookings (
   FOREIGN KEY (availability_id) REFERENCES Availability(id) ON DELETE CASCADE,
   FOREIGN KEY (renter_id) REFERENCES Renters(user_id) ON DELETE CASCADE
 );
+CREATE VIEW BookingsLive AS
+SELECT *
+FROM Bookings
+WHERE NOT cancelled;
+CREATE VIEW BookingsCancelled AS
+SELECT *
+FROM Bookings
+WHERE cancelled;
 
 CREATE TABLE ListingComments (
   renter_id INTEGER,
