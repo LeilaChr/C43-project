@@ -6,9 +6,12 @@ connection = mysql.connector.connect(user='root', password='',
                                      autocommit=True)
 
 def query(sql: str, **env):
-    print(sql % env)
+    print(trim_lines(sql % env))
 
     global connection
     cursor = connection.cursor(named_tuple=True)
     cursor.execute(sql, env)
     return cursor
+
+def trim_lines(text: str):
+    return '\n'.join([line.strip() for line in text.split('\n')])
