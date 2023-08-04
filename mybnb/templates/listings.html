@@ -1,0 +1,43 @@
+{% extends 'layouts/form.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}
+Listings &ndash; MyBnB
+{% endblock %}
+
+{% block top %}
+
+<div class="d-flex flex-column mb-4">
+  <a class="btn btn-outline-primary" href="/dashboard">← Dashboard</a>
+</div>
+
+<h1>Listings</h1>
+
+{% endblock %}
+
+{% block content %}
+
+<h2>Search</h2>
+
+<ul class="ps-0">
+  {% for listing in listings %}
+    <li class="card">
+      <div class="card-body d-flex flex-row align-items-baseline justify-content-between">
+        <h6 class="card-title">
+          {{ listing.type }} in {{ listing.city }} at {{ listing.postal }}
+        </h6>
+        <form class="btn-group ms-4">
+          <a href="/my-listings/{{ listing.id }}/schedule" class="btn btn-sm btn-outline-primary ps-3 pe-3">Schedule</a>
+          <a href="/my-listings/{{ listing.id }}/edit" class="btn btn-sm btn-outline-success ps-3 pe-3">Edit</a>
+          <button type="submit" formaction="/my-listings/{{ listing.id }}/delete" formmethod="POST" class="btn btn-sm btn-outline-danger ps-3 pe-3">Delete</button>
+        </form>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
+
+{% block form %}
+{{ render_form(form) }}
+{% endblock %}

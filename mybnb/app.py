@@ -4,7 +4,7 @@ from flask_session import Session
 from flask_wtf import FlaskForm
 from mysql.connector import IntegrityError, DataError
 from wtforms import StringField, PasswordField, IntegerField, FloatField, SelectField, SelectMultipleField, SubmitField
-from wtforms.validators import DataRequired, Length, Regexp, NumberRange, ValidationError
+from wtforms.validators import DataRequired, Optional, Length, Regexp, NumberRange, ValidationError
 from datetime import date, datetime, timedelta
 
 from . import tables, sanitize
@@ -16,6 +16,56 @@ app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
 Bootstrap5(app)
+
+
+TYPE_CHOICES = [
+    'Apartment',
+    'House',
+    'Bed and breakfast',
+    'Boutique hotel',
+    'Bungalow',
+    'Cabin',
+    'Chalet',
+    'Condominium',
+    'Cottage',
+    'Guest suite',
+    'Guesthouse',
+    'Hostel',
+    'Hotel',
+    'Kezhan',
+    'Loft',
+    'Resort',
+    'Serviced apartment',
+    'Townhouse',
+    'Villa',
+]
+AMENITIES_CHOIES = [
+    'Wifi',
+    'Kitchen',
+    'Washer',
+    'Air conditioning',
+    'Iron',
+    'Free parking',
+    'Dryer',
+    'Heating',
+    'Dedicated workspace',
+    'TV',
+    'Hair dryer',
+    'Pool',
+    'Hot tub',
+    'EV charger',
+    'Crib',
+    'Gym',
+    'BBQ grill',
+    'Breakfast',
+    'Indoor fireplace',
+    'Smoking allowed',
+    'Beachfront',
+    'Waterfront',
+    'Ski-in/ski-out',
+    'Smoke alarm',
+    'Carbon monoxide alarm',
+]
 
 
 def form_endpoint(form, template_path: str, on_submit: callable, next_location: str = None, template_args: dict = {}):
@@ -206,56 +256,11 @@ def listing_edit(id):
 
         type = SelectField(
             'Type',
-            choices=[
-                'Apartment',
-                'House',
-                'Bed and breakfast',
-                'Boutique hotel',
-                'Bungalow',
-                'Cabin',
-                'Chalet',
-                'Condominium',
-                'Cottage',
-                'Guest suite',
-                'Guesthouse',
-                'Hostel',
-                'Hotel',
-                'Kezhan',
-                'Loft',
-                'Resort',
-                'Serviced apartment',
-                'Townhouse',
-                'Villa',
-            ])
+            choices=TYPE_CHOICES
+        )
         amenities = SelectMultipleField(
             'Amenities (select multiple)',
-            choices=[
-                'Wifi',
-                'Kitchen',
-                'Washer',
-                'Air conditioning',
-                'Iron',
-                'Free parking',
-                'Dryer',
-                'Heating',
-                'Dedicated workspace',
-                'TV',
-                'Hair dryer',
-                'Pool',
-                'Hot tub',
-                'EV charger',
-                'Crib',
-                'Gym',
-                'BBQ grill',
-                'Breakfast',
-                'Indoor fireplace',
-                'Smoking allowed',
-                'Beachfront',
-                'Waterfront',
-                'Ski-in/ski-out',
-                'Smoke alarm',
-                'Carbon monoxide alarm',
-            ],
+            choices=AMENITIES_CHOICES,
             render_kw={
                 'size': '10'
             }
@@ -444,6 +449,52 @@ def rental_delete(id):
     tables.bookings.delete(id)
     flash('Rental was deleted.', 'success')
     return redirect('/my-rentals')
+
+@app.route('/listings', methods=['GET', 'POST'])
+def listings():
+    class Form(FlaskForm):
+        latitude = FloatField('Latitude', validators=[Optional()], render_kw={"placeholder": "43.784093"})
+        longitude = FloatField('Longitude', validators=[Optional()], render_kw={"placeholder": "-79.186527"})
+        min_distance = FloatField('Min Distance (km; default: 5km)', validators=[Optional()], render_kw={"placeholder": "5"})
+
+        max_price = FloatField('Max Price', validators=[Optional()], render_kw={"placeholder": "1000"})
+        min_price = FloatField('Min Price', validators=[Optional()], render_kw={"placeholder": "100"})
+        sort_by_price = SelectField('Sort By Price', validators=[Optional()], choices=['None', 'High to Low', 'Low To High'])
+
+        postal_code = StringField('Postal Code (Same and Adjacent)', validators=[Optional(), Length(6, 6)], render_kw={"placeholder": "A1B2C3"})
+        address = StringField('Address (Exact Match)', validators=[Optional()], render_kw={"placeholder": "123 Happy St, Scarborough, ON"})
+
+        start_date = StringField('Booking Period Start', validators=[Optional()], render_kw={"placeholder": "YYYY-MM-DD"})
+        end_date = StringField('Booking Period End', validators=[Optional()], render_kw={"placeholder": "YYYY-MM-DD"})
+
+        type = SelectField('Type', choices=[None, *TYPE_CHOICES])
+        amenities = SelectMultipleField(
+            'Amenities (Select Multiple)',
+            choices=AMENITIES_CHOIES,
+            render_kw={
+                'size': '10'
+            }
+        )
+
+        submit = SubmitField('Apply Filters')
+
+    listings = []
+
+    def on_submit(form):
+        pass
+
+    form = Form()
+    if not form.is_submitted():
+        pass
+
+    return form_endpoint(
+        form, 'listings.html',
+        on_submit=on_submit,
+        template_args={
+            'user': tables.users.current(),
+            'listings': listings
+        }
+    )
 
 if __name__ == '__main__':
     app.run()
