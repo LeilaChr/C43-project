@@ -19,7 +19,7 @@
   <body class="d-flex flex-column m-4" style="gap: 0.5em">
     <div
       class="text-center mx-auto"
-      style="width: fit-content; height: fit-content"
+      style="width: fit-content; height: fit-content; min-width: 25em"
     >
       <div>{% block top %}{% endblock %}</div>
       <hr/>
@@ -29,7 +29,7 @@
       <div>{% block content %}{% endblock %}</div>
     </div>
 
-    <div class="mx-auto">
+    <div class="mx-auto" style="min-width: 25em">
       {% block form %}{% endblock %}
     </div>
   </body>
