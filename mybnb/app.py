@@ -39,7 +39,7 @@ TYPE_CHOICES = [
     'Townhouse',
     'Villa',
 ]
-AMENITIES_CHOIES = [
+AMENITIES_CHOICES = [
     'Wifi',
     'Kitchen',
     'Washer',
@@ -470,7 +470,7 @@ def listings():
         type = SelectField('Type', choices=[None, *TYPE_CHOICES])
         amenities = SelectMultipleField(
             'Amenities (Select Multiple)',
-            choices=AMENITIES_CHOIES,
+            choices=AMENITIES_CHOICES,
             render_kw={
                 'size': '10'
             }
