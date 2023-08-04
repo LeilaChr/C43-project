@@ -241,33 +241,67 @@ def listing_delete(id):
     flash('Listing was deleted.', 'success')
     return redirect('/my-listings')
 
+class ListingEditForm(FlaskForm):
+    id = StringField('Listing ID', render_kw={'readonly': True})
+
+    country = StringField('Country', validators=[Length(1, 31)])
+    city = StringField('City', validators=[Length(1, 31)])
+    postal = StringField('Postal', validators=[Length(6, 6)])
+    address = StringField('Address', validators=[Length(0, 127)])
+
+    lat = FloatField('Latitude', validators=[DataRequired()])
+    lon = FloatField('Longitude', validators=[DataRequired()])
+
+    type = SelectField(
+        'Type',
+        choices=TYPE_CHOICES
+    )
+    amenities = SelectMultipleField(
+        'Amenities (select multiple)',
+        choices=AMENITIES_CHOICES,
+        render_kw={
+            'size': '10'
+        }
+    )
+
+    submit = SubmitField('Save Changes')
+
+@app.route('/my-listings/create', methods=['GET', 'POST'])
+def listing_create():
+    current_user = tables.users.current()
+
+    def on_submit(form):
+        tables.listings.create(
+            owner_id=current_user.id,
+
+            country=form.country.data,
+            city=form.city.data,
+            postal=form.postal.data,
+            address=form.address.data,
+
+            lat=form.lat.data,
+            lon=form.lon.data,
+
+            type=form.type.data,
+            amenities=', '.join(form.amenities.data),
+        )
+        flash('Listing created.', 'success')
+
+    form = ListingEditForm()
+    if not form.is_submitted():
+        del form.id
+
+    return form_endpoint(
+        form, 'listing-create.html',
+        on_submit=on_submit,
+        next_location='/my-listings',
+        template_args={
+            'user': current_user
+        }
+    )
+
 @app.route('/my-listings/<id>/edit', methods=['GET', 'POST'])
 def listing_edit(id):
-    class Form(FlaskForm):
-        id = StringField('Listing ID', render_kw={'readonly': True})
-
-        country = StringField('Country', validators=[Length(1, 31)])
-        city = StringField('City', validators=[Length(1, 31)])
-        postal = StringField('Postal', validators=[Length(6, 6)])
-        address = StringField('Address', validators=[Length(0, 127)])
-
-        lat = FloatField('Latitude', validators=[DataRequired()])
-        lon = FloatField('Longitude', validators=[DataRequired()])
-
-        type = SelectField(
-            'Type',
-            choices=TYPE_CHOICES
-        )
-        amenities = SelectMultipleField(
-            'Amenities (select multiple)',
-            choices=AMENITIES_CHOICES,
-            render_kw={
-                'size': '10'
-            }
-        )
-
-        submit = SubmitField('Save Changes')
-
     def on_submit(form):
         tables.listings.update(
             id=id,
@@ -287,7 +321,7 @@ def listing_edit(id):
 
     listing = tables.listings.for_id(id)
 
-    form = Form()
+    form = ListingEditForm()
     if not form.is_submitted():
         form.id.data = listing.id
 
@@ -305,6 +339,7 @@ def listing_edit(id):
     return form_endpoint(
         form, 'listing-edit.html',
         on_submit=on_submit,
+        next_location='/my-listings',
         template_args={
             'user': tables.users.current(),
             'listing': listing
@@ -407,7 +442,7 @@ def listing_schedule_add_week_of_slots(listing_id):
     listing = tables.listings.for_id(listing_id)
     latest_slot = tables.booking_slots.latest_for_listing(listing)
 
-    start_date = latest_slot.date + timedelta(days=1)
+    start_date = (latest_slot.date if latest_slot else date.today()) + timedelta(days=1)
     end_date = start_date + timedelta(days=6)
 
     add_booking_slots(listing_id, start_date, end_date)

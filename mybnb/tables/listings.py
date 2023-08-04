@@ -46,6 +46,28 @@ def for_id(id):
         id=id
     ).fetchone()
 
+def create(**env):
+    query(
+        '''
+            INSERT INTO Listings(owner_id, country, city, postal, address, lat, lon, type, amenities)
+            VALUES (
+                %(owner_id)s,
+
+                %(country)s,
+                %(city)s,
+                %(postal)s,
+                %(address)s,
+
+                %(lat)s,
+                %(lon)s,
+
+                %(type)s,
+                %(amenities)s
+            )
+        ''',
+        **env
+    )
+
 def update(**env):
     query(
         '''

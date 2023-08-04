@@ -57,7 +57,7 @@ def latest_for_listing(listing: listings.Listing):
         listing_id=listing.id
     ).fetchone()
 
-    return BookingSlot.from_record(slot, listing=listing)
+    return BookingSlot.from_record(slot, listing=listing) if slot else None
 
 def for_id(id) -> BookingSlot:
     slot = query(
