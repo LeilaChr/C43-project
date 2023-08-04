@@ -12,23 +12,27 @@ def count_bookings_by_city_in_date_range(start_date: date, end_date: date):
             JOIN Availability A ON A.id = B.availability_id
             JOIN BookingSlots S ON S.id = A.slot_id
             JOIN Listings L ON L.id = S.listing_id
-            WHERE S.date >= %(start_date)s AND S.date <= %(end_date)s
+            WHERE
+                S.date >= %(start_date)s AND
+                S.date <= %(end_date)s
             GROUP BY L.city
         ''',
         start_date=start_date,
         end_date=end_date
     )
 
-def count_bookings_by_city_for_postal(postal):
+def count_bookings_by_city_postal(start_date: date, end_date: date):
     return query(
         '''
-            SELECT L.city, COUNT(L.id) AS count
+            SELECT L.city, L.postal, COUNT(L.id) AS count
             FROM BookingsLive B
             JOIN Availability A ON A.id = B.availability_id
             JOIN BookingSlots S ON S.id = A.slot_id
             JOIN Listings L ON L.id = S.listing_id
-            WHERE L.postal = %(postal)s
-            GROUP BY L.city
+            WHERE
+                S.date >= %(start_date)s AND
+                S.date <= %(end_date)s
+            GROUP BY L.city, L.postal
         ''',
         postal=postal
     )

@@ -531,5 +531,24 @@ def listings():
         }
     )
 
+@app.route('/reports', methods=['GET', 'POST'])
+def reports():
+    class Form(FlaskForm):
+        start_date = StringField('Start Date', validators=[Length(1, 15)], render_kw={"placeholder": "YYYY-MM-DD"})
+        end_date = StringField('End Date', validators=[Length(1, 15)], render_kw={"placeholder": "YYYY-MM-DD"})
+
+        submit = SubmitField('Generate Report')
+
+    def on_submit(form):
+        pass
+    
+    return form_endpoint(
+        Form, 'reports.html',
+        on_submit=on_submit,
+        template_args={
+            'user': tables.users.current()
+        }
+    )
+
 if __name__ == '__main__':
     app.run()
