@@ -7,7 +7,7 @@ from wtforms import StringField, PasswordField, IntegerField, FloatField, Select
 from wtforms.validators import DataRequired, Optional, Length, Regexp, NumberRange, ValidationError
 from datetime import date, datetime, timedelta
 
-from . import tables, sanitize
+from . import tables, sanitize, reports
 
 app = Flask(__name__)
 app.secret_key = 'B5F61F92-EADD-4952-A165-A39568B83603'
@@ -532,7 +532,7 @@ def listings():
     )
 
 @app.route('/reports', methods=['GET', 'POST'])
-def reports():
+def reports_():
     class Form(FlaskForm):
         start_date = StringField('Start Date', validators=[Length(1, 15)], render_kw={"placeholder": "YYYY-MM-DD"})
         end_date = StringField('End Date', validators=[Length(1, 15)], render_kw={"placeholder": "YYYY-MM-DD"})
@@ -541,12 +541,78 @@ def reports():
 
     def on_submit(form):
         pass
-    
+
+    report = []
+
+    form = Form()
+    if form.is_submitted():
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+
+        report.append({
+            'title': 'Bookings by City',
+            'records': reports.count_bookings_by_city(start_date, end_date)
+        })
+        report.append({
+            'title': 'Bookings by City and Postal Code',
+            'records': reports.count_bookings_by_city_postal(start_date, end_date)
+        })
+
+        report.append({
+            'title': 'Listings by Country',
+            'records': reports.count_listings_by_country()
+        })
+        report.append({
+            'title': 'Listings by Country and City',
+            'records': reports.count_listings_by_country_city()
+        })
+        report.append({
+            'title': 'Listings by Country, City, and Postal Code',
+            'records': reports.count_listings_by_country_city_postal()
+        })
+
+        for country, in reports.all_countries():
+            report.append({
+                'title': f'Top Hosts in {country}',
+                'records': reports.top_hosts_in_country(country)
+            })
+        for country, city in reports.all_country_cities():
+            report.append({
+                'title': f'Top Hosts in {city}, {country}',
+                'records': reports.top_hosts_in_country_city(country, city)
+            })
+
+        for country, city in reports.all_country_cities():
+            report.append({
+                'title': f'Potential Commercial Hosts in {city}, {country}',
+                'records': reports.potential_commercial_hosts(country, city)
+            })
+
+        report.append({
+            'title': 'Top Renters by Bookings',
+            'records': reports.top_renters(start_date, end_date)
+        })
+        for country, city in reports.all_country_cities():
+            report.append({
+                'title': f'Top Renters in {city}, {country} by Bookings (≥2)',
+                'records': reports.top_renters_by_country_city(start_date, end_date, country, city)
+            })
+
+        report.append({
+            'title': 'Top Hosts by Cancellations',
+            'records': reports.top_cancelling_hosts(start_date, end_date)
+        })
+        report.append({
+            'title': 'Top Renters by Cancellations',
+            'records': reports.top_cancelling_renters(start_date, end_date)
+        })
+
     return form_endpoint(
         Form, 'reports.html',
         on_submit=on_submit,
         template_args={
-            'user': tables.users.current()
+            'user': tables.users.current(),
+            'report': report
         }
     )
 

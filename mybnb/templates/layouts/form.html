@@ -32,5 +32,12 @@
     <div class="mx-auto" style="min-width: 25em">
       {% block form %}{% endblock %}
     </div>
+
+    <div
+      class="text-center mx-auto"
+      style="width: fit-content; height: fit-content; min-width: 25em"
+    >
+      <div>{% block content_below %}{% endblock %}</div>
+    </div>
   </body>
 </html>

@@ -24,3 +24,38 @@ Reports &ndash; MyBnB
 {{ render_form(form) }}
 
 {% endblock %}
+
+{% block content_below %}
+
+<hr/>
+
+{% for section in report %}
+  <h4 class="mt-4 mb-3">{{ section['title'] }}</h4>
+
+  {% if section['records'] %}
+    <table class="table mb-5" style="text-align: left">
+      <thead>
+        <tr>
+          {% for key in section['records'][0]._fields %}
+            <th scope="col">
+              {{ key | replace('_', ' ') }}
+            </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in section['records'] %}
+          <tr>
+            {% for value in record %}
+              <td>{{ value }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No records to show.</p>
+  {% endif %}
+{% endfor %}
+
+{% endblock %}

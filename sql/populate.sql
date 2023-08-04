@@ -34,3 +34,6 @@ INSERT IGNORE INTO Availability(id, slot_id, rental_price)
 VALUES (3, 4, 225);
 INSERT IGNORE INTO Bookings(availability_id, renter_id, cancelled)
 VALUES (3, 2, 0);
+
+INSERT IGNORE INTO Listings(id, owner_id, country, city, postal, address, lat, lon, type, amenities)
+VALUES (2, 1, 'Candyland', 'Licoriceville', 'a1r3e2', '400 Candy Way', 1000, 1000000, 'Bed and breakfast', 'Breakfast');
