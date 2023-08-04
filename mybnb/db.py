@@ -6,6 +6,8 @@ connection = mysql.connector.connect(user='root', password='',
                                      autocommit=True)
 
 def query(sql: str, **env):
+    print(sql % env)
+
     global connection
     cursor = connection.cursor(named_tuple=True)
     cursor.execute(sql, env)
