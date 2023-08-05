@@ -30,6 +30,19 @@ def cancellations(slot_id):
         slot_id=slot_id
     ).fetchall()
 
+def book(availability_id):
+    query(
+        '''
+            INSERT INTO Bookings(availability_id, renter_id)
+            VALUES (
+                %(availability_id)s,
+                %(renter_id)s
+            )
+        ''',
+        availability_id=availability_id,
+        renter_id=session['user_id']
+    )
+
 def rentals_for_id(id):
     rental = query(
         '''

@@ -490,11 +490,11 @@ def listings():
     class Form(FlaskForm):
         latitude = FloatField('Latitude', validators=[Optional()], render_kw={"placeholder": "43.784093"})
         longitude = FloatField('Longitude', validators=[Optional()], render_kw={"placeholder": "-79.186527"})
-        min_distance = FloatField('Min Distance (km; default: 5km)', validators=[Optional()], render_kw={"placeholder": "5"})
+        max_distance = FloatField('Max Distance (km; default: 5km)', validators=[Optional()], render_kw={"placeholder": "5"})
 
         max_price = FloatField('Max Price', validators=[Optional()], render_kw={"placeholder": "1000"})
         min_price = FloatField('Min Price', validators=[Optional()], render_kw={"placeholder": "100"})
-        sort_by_price = SelectField('Sort By Price', validators=[Optional()], choices=['None', 'High to Low', 'Low To High'])
+        sort_by_price = SelectField('Sort By Price', validators=[Optional()], choices=['None', 'High To Low', 'Low To High'])
 
         postal_code = StringField('Postal Code (Same and Adjacent)', validators=[Optional(), Length(6, 6)], render_kw={"placeholder": "A1B2C3"})
         address = StringField('Address (Exact Match)', validators=[Optional()], render_kw={"placeholder": "123 Happy St, Scarborough, ON"})
@@ -513,14 +513,42 @@ def listings():
 
         submit = SubmitField('Apply Filters')
 
-    listings = []
 
     def on_submit(form):
         pass
+    listings = []
 
     form = Form()
-    if not form.is_submitted():
-        pass
+    if form.is_submitted():
+        filters = []
+
+        if form.max_price.data:
+            filters.append(('rental_price',form.max_price.data, '<='))
+        if form.min_price.data:
+            filters.append(('rental_price',form.min_price.data, '>='))
+        if form.sort_by_price.data:
+            filters.append(('sort',form.sort_by_price.data, 'sort'))
+        if form.postal_code.data:
+            filters.append(('postal',form.postal_code.data[:3],'='))
+        if form.address.data:
+            filters.append(('address',form.address.data,'='))
+        if form.type.data:
+            filters.append(('type',form.type.data,'='))
+        if form.amenities.data:
+            filters.append(('amenities',form.amenities.data,'LIKE'))
+        if form.start_date.data:
+            filters.append(('date',form.start_date.data,'>='))   
+        if form.end_date.data:
+            filters.append(('date',form.end_date.data,'<='))
+        
+        if form.latitude.data and form.longitude.data:
+            if not form.max_distance.data:
+                form.max_distance.data = 5
+            filters.append(('distance',(form.latitude.data,form.longitude.data,form.max_distance.data),'<='))
+
+        id = tables.users.current().id
+        listings = tables.listings.search(id,filters)
+        
 
     return form_endpoint(
         form, 'listings.html',
@@ -530,6 +558,12 @@ def listings():
             'listings': listings
         }
     )
+
+@app.route('/listings/<id>/book', methods=['GET','POST'])
+def book_listing(id):
+    tables.bookings.book(id)
+    flash('Rental was booked.', 'success')
+    return redirect('/listings')
 
 @app.route('/reports', methods=['GET', 'POST'])
 def reports_():

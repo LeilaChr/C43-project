@@ -96,3 +96,63 @@ def delete(id):
         ''',
         id=id
     )
+
+def search(id, filters):
+    query_string = '''
+            SELECT rental_price, country, city, postal, address, lat, lon,
+                type, amenities, B.id AS slot_id, A.id AS availability_id, date
+            FROM Listings
+            LEFT JOIN BookingSlots B ON B.listing_id = Listings.id
+            LEFT JOIN Availability A ON A.slot_id = B.id    
+            WHERE owner_id != %(id)s AND rental_price != "None" 
+            AND NOT EXISTS ( SELECT availability_id FROM Bookings WHERE Bookings.availability_id = A.id )
+        '''
+
+    filter_params = {'id': id}
+    if filters:
+        filter_conditions = []
+        sort = ""
+        for idx, (filter_name, filter_value, filter_sign) in enumerate(filters):
+            if filter_name == "postal":
+                filter_conditions.append(f"LEFT({filter_name},3) {filter_sign} %(filter_{idx})s")
+                filter_params[f'filter_{idx}'] = filter_value
+            elif filter_name == "sort":
+                if filter_value == "Low To High":
+                    sort += f" ORDER BY rental_price DESC"
+                elif filter_value == "High To Low":
+                    sort += f" ORDER BY rental_price ASC"
+            elif filter_name == "type":
+                if filter_value != "None":
+                    filter_conditions.append(f"{filter_name} {filter_sign} %(filter_{idx})s")
+                    filter_params[f'filter_{idx}'] = filter_value
+            elif filter_name == "distance":
+
+                distance = f"111.111 \
+                    * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(lat))\
+                    * COS(RADIANS(%(filter_{idx}_lat)s))\
+                    * COS(RADIANS(lon - %(filter_{idx}_lon)s))\
+                    + SIN(RADIANS(lat))\
+                    * SIN(RADIANS(%(filter_{idx}_lat)s)))))"
+                distance_condition = f"({distance} {filter_sign} %(filter_{idx}_distance)s)"
+                filter_conditions.append(distance_condition)
+                filter_params[f'filter_{idx}_lat'] = filter_value[0]
+                filter_params[f'filter_{idx}_lon'] = filter_value[1]
+                filter_params[f'filter_{idx}_distance'] = filter_value[2]
+
+                sort = f"{sort}, {distance} DESC" if sort else f" ORDER BY {distance} DESC"
+
+            elif filter_name == "amenities":
+                for amenity in filter_value:
+                    filter_conditions.append(f"amenities {filter_sign} %(filter_{idx}_{amenity})s")
+                    filter_params[f'filter_{idx}_{amenity}'] = f"%{amenity}%"
+            else:
+                filter_conditions.append(f"{filter_name} {filter_sign} %(filter_{idx})s")
+                filter_params[f'filter_{idx}'] = filter_value
+        if filter_conditions:
+            filter_string = " AND ".join(filter_conditions)
+            query_string += f" AND {filter_string}" 
+        if not sort:
+            sort = " ORDER BY date"
+        query_string += sort
+    
+    return query(query_string, **filter_params).fetchall()
