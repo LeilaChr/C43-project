@@ -7,6 +7,7 @@ from . import booking_slots
 from ..db import query
 
 class Bookings(NamedTuple):
+    id: int
     availability_id: int
     slot_id: int
 

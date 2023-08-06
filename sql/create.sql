@@ -81,7 +81,8 @@ FROM Availability
 WHERE NOT retracted;
 
 CREATE TABLE Bookings (
-  availability_id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  availability_id INTEGER NOT NULL,
   renter_id INTEGER NOT NULL,
   cancelled BOOLEAN DEFAULT 0,
 
