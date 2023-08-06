@@ -105,7 +105,7 @@ def search(id, filters):
             LEFT JOIN BookingSlots B ON B.listing_id = Listings.id
             LEFT JOIN Availability A ON A.slot_id = B.id    
             WHERE owner_id != %(id)s AND rental_price != "None" 
-            AND NOT EXISTS ( SELECT availability_id FROM Bookings WHERE Bookings.availability_id = A.id )
+            AND NOT EXISTS ( SELECT availability_id FROM Bookings WHERE Bookings.availability_id = A.id AND Bookings.cancelled = 0)
         '''
 
     filter_params = {'id': id}
