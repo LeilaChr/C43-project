@@ -58,8 +58,8 @@ def create(**env):
                 %(postal)s,
                 %(address)s,
 
-                %(lat)s,
-                %(lon)s,
+                LEAST(GREATEST(%(lat)s, -90), 90),
+                LEAST(GREATEST(%(lon)s, -180), 180),
 
                 %(type)s,
                 %(amenities)s
@@ -78,12 +78,12 @@ def update(**env):
                 postal = %(postal)s,
                 address = %(address)s,
 
-                lat = %(lat)s,
-                lon = %(lon)s,
+                lat = LEAST(GREATEST(%(lat)s, -90), 90),
+                lon = LEAST(GREATEST(%(lon)s, -180), 180),
 
                 type = %(type)s,
                 amenities = %(amenities)s
-            WHERE id = %(id)s
+            WHERE id = %(id)s 
         ''',
         **env
     )

@@ -32,6 +32,23 @@ My Rentals &ndash; MyBnB
       </div>
     </li>
   {% endfor %}
+
+{% if pastrentals%}
+
+<h2>My Past Rentals</h2>
+
+  {% for pastrental in pastrentals %}
+    <li class="card">
+      <div class="card-body">
+        <h6 class="card-title d-flex flex-column align-items-center">
+            <span class="text-info">{{ pastrental.date }} &ndash; {{ "${:,.0f}".format(pastrental.rental_price) }}/night</span>
+            <span class="text-info">At the location {{ pastrental.address }}, {{ pastrental.city }}, {{ pastrental.country }}, {{ pastrental.postal }}</span>
+        </h6>
+      </div>
+    </li>
+  {% endfor %}
+
+{% endif %}
 </ul>
 
 {% endblock %}

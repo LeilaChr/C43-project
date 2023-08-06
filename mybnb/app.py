@@ -480,7 +480,8 @@ def my_rentals():
     return render_template(
         'my-rentals.html',
         user=tables.users.current(),
-        rentals=tables.bookings.rentals_for_id(id)
+        rentals=tables.bookings.rentals_for_id(id),
+        pastrentals=tables.bookings.past_rentals_for_id(id)
     )
 
 @app.route('/my-rentals/<id>/delete', methods=['POST'])

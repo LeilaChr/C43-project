@@ -33,10 +33,11 @@ def cancellations(slot_id):
 def book(availability_id):
     query(
         '''
-            INSERT INTO Bookings(availability_id, renter_id)
+            INSERT INTO Bookings(availability_id, renter_id, cancelled)
             VALUES (
                 %(availability_id)s,
-                %(renter_id)s
+                %(renter_id)s,
+                0
             )
         ''',
         availability_id=availability_id,
@@ -52,7 +53,22 @@ def rentals_for_id(id):
             LEFT JOIN Availability A ON A.id = availability_id
             LEFT JOIN BookingSlots B ON B.id = slot_id
             LEFT JOIN Listings L ON L.id = B.listing_id
-            WHERE renter_id = %(id)s AND cancelled = 0
+            WHERE renter_id = %(id)s AND cancelled = 0 AND date >= CURRENT_DATE()
+        ''',
+        id=id
+    ).fetchall()
+    return rental
+
+def past_rentals_for_id(id):
+    rental = query(
+        '''
+            SELECT slot_id, renter_id, cancelled, date, country, city, address, 
+              postal, amenities, rental_price, type
+            FROM Bookings
+            LEFT JOIN Availability A ON A.id = availability_id
+            LEFT JOIN BookingSlots B ON B.id = slot_id
+            LEFT JOIN Listings L ON L.id = B.listing_id
+            WHERE renter_id = %(id)s AND cancelled = 0 AND date < CURRENT_DATE()
         ''',
         id=id
     ).fetchall()
