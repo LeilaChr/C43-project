@@ -118,9 +118,9 @@ def search(id, filters):
                 filter_params[f'filter_{idx}'] = filter_value
             elif filter_name == "sort":
                 if filter_value == "Low To High":
-                    sort += f" ORDER BY rental_price DESC"
-                elif filter_value == "High To Low":
                     sort += f" ORDER BY rental_price ASC"
+                elif filter_value == "High To Low":
+                    sort += f" ORDER BY rental_price DESC"
             elif filter_name == "type":
                 if filter_value != "None":
                     filter_conditions.append(f"{filter_name} {filter_sign} %(filter_{idx})s")
