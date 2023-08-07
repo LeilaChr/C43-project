@@ -42,13 +42,13 @@ Listings &ndash; MyBnB
     <li class="card">
       <div class="card-body d-flex flex-row align-items-baseline justify-content-between">
         <h6 class="card-title d-flex flex-column align-items-start">
-          <span class="text-info">{{ listing.date }} &ndash; {{ "${:,.0f}".format(listing.rental_price) }}/night</span>
-          <span class="text-info">At the location {{ listing.address }}, {{ listing.city }}, {{ listing.country }}, {{ listing.postal }}</span>
+          <span>{{ listing.date }} &ndash; {{ "${:,.0f}".format(listing.rental_price) }}/night</span>
+          <span>At the location {{ listing.address }}, {{ listing.city }}, {{ listing.country }}, {{ listing.postal }}</span>
           {% if listing.type == None %}
-          <span class="text-info">With Amenities {{ listing.amenities }}</span>
+          <span>With Amenities {{ listing.amenities }}</span>
           {% else %}
-          <span class="text-info">With Amenities {{ listing.amenities }}</span>
-          <span class="text-info">Listing Type: {{ listing.type }}</span> 
+          <span>With Amenities {{ listing.amenities }}</span>
+          <span>Listing Type: {{ listing.type }}</span> 
           {% endif %}
         </h6>
         <form class="btn-group ms-4">
