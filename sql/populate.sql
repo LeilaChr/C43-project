@@ -93,7 +93,10 @@ VALUES
   (58, 12, DATE_ADD(CURDATE(), INTERVAL 3 DAY)),
   (59, 12, DATE_ADD(CURDATE(), INTERVAL 4 DAY)),
   (60, 12, DATE_ADD(CURDATE(), INTERVAL 5 DAY)),
-  (61, 12, DATE_ADD(CURDATE(), INTERVAL 6 DAY));
+  (61, 12, DATE_ADD(CURDATE(), INTERVAL 6 DAY)),
+  (62, 12, DATE_SUB(CURDATE(), INTERVAL 3 DAY)),
+  (63, 12, DATE_SUB(CURDATE(), INTERVAL 2 DAY)),
+  (64, 12, DATE_SUB(CURDATE(), INTERVAL 1 DAY));
 
 INSERT IGNORE INTO Availability(id, slot_id, rental_price)
 VALUES
@@ -157,4 +160,21 @@ VALUES
   (58, 58, 485),
   (59, 59, 490),
   (60, 60, 495),
-  (61, 61, 500);
+  (61, 61, 500),
+  (62, 62, 505),
+  (63, 63, 510),
+  (64, 64, 515);
+
+INSERT IGNORE INTO Bookings(availability_id, renter_id)
+VALUES
+  (61, 3),
+  (62, 3),
+  (63, 3),
+  (64, 4);
+
+INSERT IGNORE INTO ListingComments(renter_id, listing_id, comment, rating)
+VALUES
+  (3, 1, "Nice place, great kitchen. I loved walking in the nearby park with my dog", 4),
+  (4, 1, "Good place to relax. And my dog likes the dog park", 3),
+  (5, 1, "Too many dogs.", 1);
+  

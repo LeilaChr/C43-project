@@ -1,6 +1,7 @@
 from typing import NamedTuple, Optional
 from datetime import date
 from flask import session
+import nltk
 
 from .db import query
 
@@ -220,4 +221,39 @@ def top_cancelling_hosts(start_date, end_date):
         end_date=end_date
     ).fetchall()
 
-# TODO: Scan listing comments for noun phrases
+def top_noun_phrases_by_listing_comment():
+    comments = query(
+        '''
+            SELECT R.name AS Renter_Name, L.address AS Listing_Address, LC.comment AS NPs, LC.rating AS Rating
+            FROM ListingComments LC
+            JOIN Users R ON R.id = LC.renter_id
+            JOIN Listings L ON L.id = LC.listing_id
+            WHERE LC.comment IS NOT NULL
+        '''
+    ).fetchall()
+
+    def find_noun_phrases(text: str):
+        tokens = nltk.word_tokenize(text)
+        return [word for (word, tag) in nltk.pos_tag(tokens) if tag.startswith('N')]
+
+    return [
+        comment._replace(NPs=', '.join(find_noun_phrases(comment.NPs)))
+        for comment in comments
+    ]
+
+def top_noun_phrases_in_listing_comments():
+    top_nps = {}
+
+    for comment in top_noun_phrases_by_listing_comment():
+        for np in comment.NPs.split(', '):
+            top_nps.setdefault(np, 0)
+            top_nps[np] += 1
+
+    class TopNP(NamedTuple):
+        NP: str
+        Count: str
+
+    return [
+        TopNP(NP=np, Count=count)
+        for (np, count) in sorted(top_nps.items(), key=lambda item: item[1], reverse=True)
+    ]

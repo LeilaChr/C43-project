@@ -791,6 +791,15 @@ def reports_():
             'records': reports.top_cancelling_renters(start_date, end_date)
         })
 
+        report.append({
+            'title': 'Top Noun Phrases by Listing Comment',
+            'records': reports.top_noun_phrases_by_listing_comment()
+        })
+        report.append({
+            'title': 'Top Noun Phrases in All Listing Comments',
+            'records': reports.top_noun_phrases_in_listing_comments()
+        })
+
     return form_endpoint(
         Form, 'reports.html',
         on_submit=on_submit,

@@ -6,6 +6,7 @@ CSCC43 final project.
 
 ```
 poetry install
+poetry run python install_nltk.py
 ```
 
 ## Start server
