@@ -35,19 +35,19 @@ My Rentals &ndash; MyBnB
 
 {% if pastrentals%}
 
-<h2>My Past Rentals</h2>
+<h2 class="mt-5 mb-4">My Past Rentals</h2>
 
   {% for pastrental in pastrentals %}
     <li class="card">
       <div class="card-body d-flex flex-row align-items-baseline justify-content-between">
-        <h6 class="card-title d-flex flex-column align-items-center">
+        <h6 class="card-title d-flex flex-column align-items-start">
             <span class="text-info">{{ pastrental.date }} &ndash; {{ "${:,.0f}".format(pastrental.rental_price) }}/night</span>
             <span class="text-info">At the location {{ pastrental.address }}, {{ pastrental.city }}, {{ pastrental.country }}, {{ pastrental.postal }}</span>
         </h6>
         <form class="btn-group ms-4">
-          <button type="submit" formaction="/my-rentals/{{ pastrental.owner_id }}/rate-host" formmethod="POST" class="btn btn-sm btn-outline-success ps-3 pe-3">Rate Host</button>
+          <a href="/my-rentals/{{ pastrental.owner_id }}/rate-host" class="btn btn-sm btn-outline-success ps-3 pe-3">Rate Host</a>
           {% if two_weeks_ago < pastrental.date %}
-          <button type="submit" formaction="/my-rentals/{{ pastrental.listing_id }}/rate" formmethod="POST" class="btn btn-sm btn-outline-success ps-3 pe-3">Rate Stay</button>
+          <a href="/my-rentals/{{ pastrental.listing_id }}/rate" class="btn btn-sm btn-outline-success ps-3 pe-3">Rate Stay</a>
           {%else%}
           <button type="submit" formaction="#" disabled class="btn btn-sm btn-outline-danger ps-3 pe-3">Unable to Rate Stay</button>
           {%endif%}

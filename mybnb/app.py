@@ -350,10 +350,10 @@ def listing_schedule(id):
         two_weeks_ago=two_weeks_ago
     )
 
-@app.route('/my-listings/<listing_id>/schedule/<renter_id>/rate-renter', methods=['POST'])
+@app.route('/my-listings/<listing_id>/schedule/<renter_id>/rate-renter', methods=['GET', 'POST'])
 def rate_renter(listing_id, renter_id):
     class Form(FlaskForm):
-        rating = FloatField('Rating', render_kw={"placeholder": "ratings are between 0 and 5"})
+        rating = FloatField('Rating', validators=[NumberRange(0, 5)], render_kw={"placeholder": "ratings are between 0 and 5"})
         comment = StringField('Comment', render_kw={"placeholder": "Amazing!"})
 
         submit = SubmitField('Submit Comments and Rating', render_kw={'class': 'btn-primary'})
@@ -369,12 +369,8 @@ def rate_renter(listing_id, renter_id):
         )
         flash('Rating submitted.', 'success')
 
-    form = Form()
-    if not form.is_submitted():
-        del form.id
-
     return form_endpoint(
-        form, 'renter-rate.html',
+        Form, 'renter-rate.html',
         on_submit=on_submit,
         next_location=f'/my-listings/{listing_id}/schedule',
         template_args={
@@ -522,10 +518,10 @@ def rental_delete(id):
     flash('Rental was deleted.', 'success')
     return redirect('/my-rentals')
 
-@app.route('/my-rentals/<listing_id>/rate', methods=['POST'])
+@app.route('/my-rentals/<listing_id>/rate', methods=['GET', 'POST'])
 def rental_rate(listing_id):
     class Form(FlaskForm):
-        rating = FloatField('Rating', render_kw={"placeholder": "ratings are between 0 and 5"})
+        rating = FloatField('Rating', validators=[NumberRange(0, 5)], render_kw={"placeholder": "ratings are between 0 and 5"})
         comment = StringField('Comment', render_kw={"placeholder": "Amazing!"})
 
         submit = SubmitField('Submit Comments and Rating', render_kw={'class': 'btn-primary'})
@@ -541,12 +537,8 @@ def rental_rate(listing_id):
         )
         flash('Rating submitted.', 'success')
 
-    form = Form()
-    if not form.is_submitted():
-        del form.id
-
     return form_endpoint(
-        form, 'rental-rate.html',
+        Form, 'rental-rate.html',
         on_submit=on_submit,
         next_location='/my-rentals',
         template_args={
@@ -555,10 +547,10 @@ def rental_rate(listing_id):
     )
 
 
-@app.route('/my-rentals/<host_id>/rate-host', methods=['POST'])
+@app.route('/my-rentals/<host_id>/rate-host', methods=['GET', 'POST'])
 def rate_host(host_id):
     class Form(FlaskForm):
-        rating = FloatField('Rating', render_kw={"placeholder": "ratings are between 0 and 5"})
+        rating = FloatField('Rating', validators=[NumberRange(0, 5)], render_kw={"placeholder": "ratings are between 0 and 5"})
         comment = StringField('Comment', render_kw={"placeholder": "Amazing!"})
 
         submit = SubmitField('Submit Comments and Rating', render_kw={'class': 'btn-primary'})
@@ -574,12 +566,8 @@ def rate_host(host_id):
         )
         flash('Rating submitted.', 'success')
 
-    form = Form()
-    if not form.is_submitted():
-        del form.id
-
     return form_endpoint(
-        form, 'host-rate.html',
+        Form, 'host-rate.html',
         on_submit=on_submit,
         next_location='/my-rentals',
         template_args={
