@@ -33,7 +33,7 @@ class BookingSlot(NamedTuple):
 def all_for_listing(listing: listings.Listing):
     for slot in query(
         '''
-            SELECT S.id, S.listing_id, S.date, A.rental_price, B.renter_id
+            SELECT DISTINCT S.id, S.listing_id, S.date, A.rental_price, B.renter_id
             FROM BookingSlots S
             LEFT JOIN Availability A ON A.slot_id = S.id AND NOT A.retracted
             LEFT JOIN Bookings B ON B.availability_id = A.id AND NOT B.cancelled
@@ -46,7 +46,7 @@ def all_for_listing(listing: listings.Listing):
 def past_slots_for_listing(listing: listings.Listing):
     for slot in query(
         '''
-            SELECT S.id, S.listing_id, S.date, A.rental_price, B.renter_id
+            SELECT DISTINCT S.id, S.listing_id, S.date, A.rental_price, B.renter_id
             FROM BookingSlots S
             LEFT JOIN Availability A ON A.slot_id = S.id AND NOT A.retracted
             LEFT JOIN Bookings B ON B.availability_id = A.id AND NOT B.cancelled
@@ -59,7 +59,7 @@ def past_slots_for_listing(listing: listings.Listing):
 def latest_for_listing(listing: listings.Listing):
     slot = query(
         '''
-            SELECT S.id, S.listing_id, S.date, A.rental_price, B.renter_id
+            SELECT DISTINCT S.id, S.listing_id, S.date, A.rental_price, B.renter_id
             FROM BookingSlots S
             LEFT JOIN Availability A ON A.slot_id = S.id AND NOT A.retracted
             LEFT JOIN Bookings B ON B.availability_id = A.id AND NOT B.cancelled
