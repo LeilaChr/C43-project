@@ -477,11 +477,14 @@ def listing_schedule_add_slots(listing_id):
 @app.route('/my-rentals')
 def my_rentals():
     id=tables.users.current().id
+    today = datetime.now().date()
+    two_weeks_ago = today - timedelta(days=15)
     return render_template(
         'my-rentals.html',
         user=tables.users.current(),
         rentals=tables.bookings.rentals_for_id(id),
-        pastrentals=tables.bookings.past_rentals_for_id(id)
+        pastrentals=tables.bookings.past_rentals_for_id(id),
+        two_weeks_ago=two_weeks_ago
     )
 
 @app.route('/my-rentals/<id>/delete', methods=['POST'])
@@ -489,6 +492,72 @@ def rental_delete(id):
     tables.bookings.delete(id)
     flash('Rental was deleted.', 'success')
     return redirect('/my-rentals')
+
+@app.route('/my-rentals/<listing_id>/rate', methods=['POST'])
+def rental_rate(listing_id):
+    class Form(FlaskForm):
+        rating = FloatField('Rating', render_kw={"placeholder": "ratings are between 0 and 5"})
+        comment = StringField('Comment', render_kw={"placeholder": "Amazing!"})
+
+        submit = SubmitField('Submit Comments and Rating', render_kw={'class': 'btn-primary'})
+
+    current_user = tables.users.current()
+
+    def on_submit(form):
+        tables.listing_comments.create(
+            current_user.id,
+            listing_id,
+            form.comment.data,
+            form.rating.data
+        )
+        flash('Rating submitted.', 'success')
+
+    form = Form()
+    if not form.is_submitted():
+        del form.id
+
+    return form_endpoint(
+        form, 'rental-rate.html',
+        on_submit=on_submit,
+        next_location='/my-rentals',
+        template_args={
+            'user': current_user
+        }
+    )
+
+
+@app.route('/my-rentals/<host_id>/rate-host', methods=['POST'])
+def rate_host(host_id):
+    class Form(FlaskForm):
+        rating = FloatField('Rating', render_kw={"placeholder": "ratings are between 0 and 5"})
+        comment = StringField('Comment', render_kw={"placeholder": "Amazing!"})
+
+        submit = SubmitField('Submit Comments and Rating', render_kw={'class': 'btn-primary'})
+
+    current_user = tables.users.current()
+
+    def on_submit(form):
+        tables.user_comments.host_comment(
+            current_user.id,
+            host_id,
+            form.comment.data,
+            form.rating.data
+        )
+        flash('Rating submitted.', 'success')
+
+    form = Form()
+    if not form.is_submitted():
+        del form.id
+
+    return form_endpoint(
+        form, 'host-rate.html',
+        on_submit=on_submit,
+        next_location='/my-rentals',
+        template_args={
+            'user': current_user,
+            'host': tables.users.for_id(host_id)
+        }
+    )
 
 @app.route('/listings', methods=['GET', 'POST'])
 def listings():

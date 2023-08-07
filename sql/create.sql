@@ -107,7 +107,7 @@ CREATE TABLE ListingComments (
   FOREIGN KEY (listing_id) REFERENCES Listings(id) ON DELETE CASCADE,
 
   comment VARCHAR(511),
-  rating INTEGER
+  rating REAL
 );
 
 CREATE TABLE UserComments (
@@ -119,7 +119,7 @@ CREATE TABLE UserComments (
   FOREIGN KEY (host_id) REFERENCES Hosts(user_id) ON DELETE CASCADE,
 
   renter_comment VARCHAR(511),
-  renter_rating INTEGER,
+  renter_rating REAL,
   host_comment VARCHAR(511),
-  host_rating INTEGER
+  host_rating REAL
 );

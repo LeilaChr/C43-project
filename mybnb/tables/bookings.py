@@ -64,7 +64,7 @@ def past_rentals_for_id(id):
     rental = query(
         '''
             SELECT slot_id, renter_id, cancelled, date, country, city, address, 
-              postal, amenities, rental_price, type
+              postal, amenities, rental_price, type, listing_id, owner_id
             FROM Bookings
             LEFT JOIN Availability A ON A.id = availability_id
             LEFT JOIN BookingSlots B ON B.id = slot_id
