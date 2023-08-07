@@ -18,13 +18,13 @@ Dashboard &ndash; MyBnB
 
 {% block content %}
 
-<a class="btn btn-primary mx-auto" href="/listings" style="max-width: 20em">
-  Search Listings
-</a>
-
-<hr/>
-
 {% if user.is_renter %}
+  <a class="btn btn-primary mx-auto" href="/listings" style="max-width: 20em">
+    Search Listings
+  </a>
+
+  <hr/>
+
   <a class="btn btn-success mx-auto" href="/my-rentals" style="max-width: 20em">
     My Rentals
   </a>
