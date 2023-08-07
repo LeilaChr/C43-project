@@ -54,7 +54,7 @@ def for_id(id) -> User:
             SELECT
                 U.id, U.sin, U.username, U.name, U.dob, U.address, U.occupation,
                 COUNT(R.user_id) AS is_renter, COUNT(H.user_id) AS is_host
-            FROM Users
+            FROM Users U
             LEFT JOIN Renters R ON R.user_id = U.id
             LEFT JOIN Hosts H ON H.user_id = U.id
             WHERE id = %(id)s
