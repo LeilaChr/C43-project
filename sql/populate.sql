@@ -3,37 +3,158 @@
 USE mybnb;
 
 INSERT IGNORE INTO Users(id, sin, username, name, dob, address, occupation)
-VALUES (1, 111222333, 'ian', 'Ian Gregory', '2002-09-18', '123 Happy St, Scarborough, ON', 'Student');
+VALUES
+  (1, 111222333, 'host1', 'Host One', '2002-09-18', '123 Happy St, Scarborough, ON', 'Office worker'),
+  (2, 222333444, 'host2', 'Host Two', '2005-10-14', '456 Happy St, Scarborough, ON', 'Office manager'),
+  (3, 333444555, 'renter1', 'Renter One', '2000-01-02', '789 Happy St, Scarborough, ON', 'Average consumer'),
+  (4, 444555666, 'renter2', 'Renter Two', '2001-02-03', '123 Sad St, Scarborough, ON', 'Shoestring peddler'),
+  (5, 555666777, 'renter3', 'Renter Three', '2002-03-04', '456 Sad St, Scarborough, ON', 'Cryptocoin peddler'),
+  (6, 777888999, 'bobby', 'Little Bobby Tables', '2000-01-02', '''; DROP TABLE students; --', '''; DROP TABLE students; --');
+
 INSERT IGNORE INTO Hosts(user_id)
-VALUES (1);
-
-INSERT IGNORE INTO Users(id, sin, username, name, dob, address, occupation)
-VALUES (2, 777888999, 'bobby', 'Little Bobby Tables', '2000-01-02', '123 Happy St, Scarborough, ON', '''; DROP TABLE students; --');
+VALUES (1), (2);
 INSERT IGNORE INTO Renters(user_id)
-VALUES (2);
+VALUES (3), (4), (5), (6);
 
 INSERT IGNORE INTO Listings(id, owner_id, country, city, postal, address, lat, lon, type, amenities)
-VALUES (1, 1, "Canada", "Toronto", "A1A1A1", "123 Happy St", 123, 456, "House", "Wifi, Kitchen, Air conditioning, Free parking, Heating, Dedicated workspace, Smoke alarm, Carbon monoxide alarm");
+VALUES
+  (1, 1, 'Canada', 'Toronto', 'M5B1G3', '66 Gerrard St E', 	43.659896, -79.378768, 'Apartment', 'Kitchen, Heating, Dedicated workspace, Smoke alarm'),
+  (2, 1, 'Canada', 'Toronto', 'M2P2A9', '4211 Yonge St', 45.495836, -73.620273, 'Apartment', 'Kitchen, Air conditioning, Heating, TV, Crib'),
+  (3, 2, 'Canada', 'Oakville', 'L6L6P7', '2340 Ontario St', 43.397083, -79.708631, 'House', 'Wifi, Kitchen, Air conditioning, Free parking, Heating, Dedicated workspace, Smoke alarm, Carbon monoxide alarm'),
+  (4, 1, 'Canada', 'Winnipeg', 'R3L2A1', '244 Osborne St', 49.874779, -97.141878, 'Bed and breakfast', 'Wifi, Heating, Breakfast, Smoke alarm, Carbon monoxide alarm'),
+  (5, 2, 'Canada', 'Winnipeg', 'M2P2A9', '631 Main St', 49.902337, -97.135748, 'Apartment', 'Wifi, Kitchen, Heating, Gym'),
+  (6, 2, 'Canada', 'Winnipeg', 'R2M2S6', '200 Meadowood Dr', 49.827483, -97.105874, 'House', 'Kitchen, Air conditioning, Heating, Pool, Hot tub'),
+  (7, 2, 'Canada', 'Winnipeg', 'R3T0P3', '1000 Waverley St', 49.840044, -97.178814, 'House', 'Wifi, Heating, TV, Hair dryer, Smoke alarm, Carbon monoxide alarm'),
+  (8, 1, 'Canada', 'Montréal', 'H3T1Y1', '5199 Chemin de la Côte-des-Neiges', 45.495836, -73.620273, 'Loft', 'Wifi, Kitchen, Air conditioning, Heating, Dedicated workspace, Smoke alarm, Carbon monoxide alarm'),
+  (9, 2, 'Candyland', 'Licoriceville', 'A1R3F2', '400 Candy Way', 13.37, 13.37, 'Bed and breakfast', 'Air conditioning, Pool, Breakfast'),
+  (10, 2, 'Candyland', 'Licoriceville', 'A1R3F2', '500 Candy Way', 13.37, 13.4, 'Bed and breakfast', 'Heating, Hot tub, Breakfast'),
+  (11, 2, 'Candyland', 'Licoriceville', 'A1R3F2', '600 Candy Way', 13.37, 13.43, 'Bed and breakfast', 'Air conditioning, Heating, Pool, Hot tub, Breakfast, Waterfront, Smoke alarm'),
+  (12, 1, 'Candyland', 'Licoriceville', 'A1R3G0', '1000 Candy Way', 13.39, 13.44, 'Resort', 'Wifi, Air conditioning, Heating, Pool, Hot tub, Gym, BBQ grill, Breakfast, Waterfront, Smoke alarm, Carbon monoxide alarm');
 
 INSERT IGNORE INTO BookingSlots(id, listing_id, date)
-VALUES (1, 1, CURDATE());
+VALUES
+  (1, 1, CURDATE()),
+  (2, 1, DATE_ADD(CURDATE(), INTERVAL 1 DAY)),
+  (3, 1, DATE_ADD(CURDATE(), INTERVAL 2 DAY)),
+  (4, 1, DATE_ADD(CURDATE(), INTERVAL 3 DAY)),
+  (5, 1, DATE_ADD(CURDATE(), INTERVAL 4 DAY)),
+  (6, 1, DATE_ADD(CURDATE(), INTERVAL 5 DAY)),
+  (7, 1, DATE_ADD(CURDATE(), INTERVAL 6 DAY)),
+  (8, 2, CURDATE()),
+  (9, 2, DATE_ADD(CURDATE(), INTERVAL 1 DAY)),
+  (10, 2, DATE_ADD(CURDATE(), INTERVAL 2 DAY)),
+  (11, 2, DATE_ADD(CURDATE(), INTERVAL 3 DAY)),
+  (12, 2, DATE_ADD(CURDATE(), INTERVAL 4 DAY)),
+  (13, 2, DATE_ADD(CURDATE(), INTERVAL 5 DAY)),
+  (14, 2, DATE_ADD(CURDATE(), INTERVAL 6 DAY)),
+  (15, 2, DATE_ADD(CURDATE(), INTERVAL 7 DAY)),
+  (16, 2, DATE_ADD(CURDATE(), INTERVAL 8 DAY)),
+  (17, 2, DATE_ADD(CURDATE(), INTERVAL 9 DAY)),
+  (18, 3, CURDATE()),
+  (19, 3, DATE_ADD(CURDATE(), INTERVAL 1 DAY)),
+  (20, 3, DATE_ADD(CURDATE(), INTERVAL 2 DAY)),
+  (21, 4, CURDATE()),
+  (22, 4, DATE_ADD(CURDATE(), INTERVAL 2 DAY)),
+  (23, 4, DATE_ADD(CURDATE(), INTERVAL 10 DAY)),
+  (24, 4, DATE_ADD(CURDATE(), INTERVAL 11 DAY)),
+  (25, 4, DATE_ADD(CURDATE(), INTERVAL 12 DAY)),
+  (26, 4, DATE_ADD(CURDATE(), INTERVAL 20 DAY)),
+  (27, 5, CURDATE()),
+  (28, 5, DATE_ADD(CURDATE(), INTERVAL 4 DAY)),
+  (29, 5, DATE_ADD(CURDATE(), INTERVAL 5 DAY)),
+  (30, 5, DATE_ADD(CURDATE(), INTERVAL 9 DAY)),
+  (31, 5, DATE_ADD(CURDATE(), INTERVAL 10 DAY)),
+  (32, 5, DATE_ADD(CURDATE(), INTERVAL 11 DAY)),
+  (33, 5, DATE_ADD(CURDATE(), INTERVAL 12 DAY)),
+  (34, 5, DATE_ADD(CURDATE(), INTERVAL 13 DAY)),
+  (35, 5, DATE_ADD(CURDATE(), INTERVAL 15 DAY)),
+  (36, 6, CURDATE()),
+  (37, 6, DATE_ADD(CURDATE(), INTERVAL 7 DAY)),
+  (38, 6, DATE_ADD(CURDATE(), INTERVAL 8 DAY)),
+  (39, 6, DATE_ADD(CURDATE(), INTERVAL 9 DAY)),
+  (40, 7, DATE_ADD(CURDATE(), INTERVAL 6 DAY)),
+  (41, 8, DATE_ADD(CURDATE(), INTERVAL 4 DAY)),
+  (42, 8, DATE_ADD(CURDATE(), INTERVAL 9 DAY)),
+  (43, 8, DATE_ADD(CURDATE(), INTERVAL 15 DAY)),
+  (44, 9, DATE_ADD(CURDATE(), INTERVAL 14 DAY)),
+  (45, 9, DATE_ADD(CURDATE(), INTERVAL 15 DAY)),
+  (46, 9, DATE_ADD(CURDATE(), INTERVAL 17 DAY)),
+  (47, 9, DATE_ADD(CURDATE(), INTERVAL 18 DAY)),
+  (48, 9, DATE_ADD(CURDATE(), INTERVAL 19 DAY)),
+  (49, 9, DATE_ADD(CURDATE(), INTERVAL 20 DAY)),
+  (50, 10, DATE_ADD(CURDATE(), INTERVAL 3 DAY)),
+  (51, 10, DATE_ADD(CURDATE(), INTERVAL 4 DAY)),
+  (52, 10, DATE_ADD(CURDATE(), INTERVAL 5 DAY)),
+  (53, 10, DATE_ADD(CURDATE(), INTERVAL 6 DAY)),
+  (54, 11, DATE_ADD(CURDATE(), INTERVAL 3 DAY)),
+  (55, 11, DATE_ADD(CURDATE(), INTERVAL 4 DAY)),
+  (56, 11, DATE_ADD(CURDATE(), INTERVAL 5 DAY)),
+  (57, 11, DATE_ADD(CURDATE(), INTERVAL 6 DAY)),
+  (58, 12, DATE_ADD(CURDATE(), INTERVAL 3 DAY)),
+  (59, 12, DATE_ADD(CURDATE(), INTERVAL 4 DAY)),
+  (60, 12, DATE_ADD(CURDATE(), INTERVAL 5 DAY)),
+  (61, 12, DATE_ADD(CURDATE(), INTERVAL 6 DAY));
 
-INSERT IGNORE INTO BookingSlots(id, listing_id, date)
-VALUES (2, 1, DATE_ADD(CURDATE(), INTERVAL 1 DAY));
 INSERT IGNORE INTO Availability(id, slot_id, rental_price)
-VALUES (1, 2, 200);
-
-INSERT IGNORE INTO BookingSlots(id, listing_id, date)
-VALUES (3, 1, DATE_ADD(CURDATE(), INTERVAL 2 DAY));
-INSERT IGNORE INTO Availability(id, slot_id, rental_price)
-VALUES (2, 3, 200);
-
-INSERT IGNORE INTO BookingSlots(id, listing_id, date)
-VALUES (4, 1, DATE_ADD(CURDATE(), INTERVAL 3 DAY));
-INSERT IGNORE INTO Availability(id, slot_id, rental_price)
-VALUES (3, 4, 225);
-INSERT IGNORE INTO Bookings(availability_id, renter_id, cancelled)
-VALUES (3, 2, 0);
-
-INSERT IGNORE INTO Listings(id, owner_id, country, city, postal, address, lat, lon, type, amenities)
-VALUES (2, 1, 'Candyland', 'Licoriceville', 'a1r3e2', '400 Candy Way', 1000, 1000000, 'Bed and breakfast', 'Breakfast');
+VALUES
+  (1, 1, 200),
+  (2, 2, 205),
+  (3, 3, 210),
+  (4, 4, 215),
+  (5, 5, 220),
+  (6, 6, 225),
+  (7, 7, 230),
+  (8, 8, 235),
+  (9, 9, 240),
+  (10, 10, 245),
+  (11, 11, 250),
+  (12, 12, 255),
+  (13, 13, 260),
+  (14, 14, 265),
+  (15, 15, 270),
+  (16, 16, 275),
+  (17, 17, 280),
+  (18, 18, 285),
+  (19, 19, 290),
+  (20, 20, 295),
+  (21, 21, 300),
+  (22, 22, 305),
+  (23, 23, 310),
+  (24, 24, 315),
+  (25, 25, 320),
+  (26, 26, 325),
+  (27, 27, 330),
+  (28, 28, 335),
+  (29, 29, 340),
+  (30, 30, 345),
+  (31, 31, 350),
+  (32, 32, 355),
+  (33, 33, 360),
+  (34, 34, 365),
+  (35, 35, 370),
+  (36, 36, 375),
+  (37, 37, 380),
+  (38, 38, 385),
+  (39, 39, 390),
+  (40, 40, 395),
+  (41, 41, 400),
+  (42, 42, 405),
+  (43, 43, 410),
+  (44, 44, 415),
+  (45, 45, 420),
+  (46, 46, 425),
+  (47, 47, 430),
+  (48, 48, 435),
+  (49, 49, 440),
+  (50, 50, 445),
+  (51, 51, 450),
+  (52, 52, 455),
+  (53, 53, 460),
+  (54, 54, 465),
+  (55, 55, 470),
+  (56, 56, 475),
+  (57, 57, 480),
+  (58, 58, 485),
+  (59, 59, 490),
+  (60, 60, 495),
+  (61, 61, 500);
