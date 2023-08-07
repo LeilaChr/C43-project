@@ -36,7 +36,7 @@ CREATE TABLE Hosts (
 
 CREATE TABLE Renters (
   user_id INTEGER PRIMARY KEY,
-  card_num CHAR(15),
+  card_num CHAR(16) NOT NULL,
 
   FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );

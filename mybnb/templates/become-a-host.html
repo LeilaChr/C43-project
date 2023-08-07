@@ -1,0 +1,33 @@
+{% extends 'layouts/form.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}
+Become a Host &ndash; MyBnB
+{% endblock %}
+
+{% block top %}
+
+<div class="d-flex flex-column mb-4">
+  <a class="btn btn-outline-primary" href="/">← Dashboard</a>
+</div>
+
+<h1>Become a Host</h1>
+
+{% endblock %}
+
+{% block content %}
+
+To become a host in the MyBnB system, please agree below.
+
+<hr/>
+
+<small>
+  <p>It is your responsibility to ensure your listings are accurate and up-to-date.</p>
+  <p>Failure to comply may result in account termination.</p>
+</small>
+
+{% endblock %}
+
+{% block form %}
+{{ render_form(form) }}
+{% endblock %}

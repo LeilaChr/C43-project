@@ -18,29 +18,42 @@ Dashboard &ndash; MyBnB
 
 {% block content %}
 
-<a class="btn btn-primary mx-auto" href="/listings" style="max-width: 20em"
-  >Search Listings</a
->
+<a class="btn btn-primary mx-auto" href="/listings" style="max-width: 20em">
+  Search Listings
+</a>
 
 <hr/>
 
-<a class="btn btn-success mx-auto" href="/my-rentals" style="max-width: 20em"
-  >My Rentals</a
->
-<a class="btn btn-success mx-auto" href="/my-listings" style="max-width: 20em"
-  >My Listings</a
->
+{% if user.is_renter %}
+  <a class="btn btn-success mx-auto" href="/my-rentals" style="max-width: 20em">
+    My Rentals
+  </a>
+{% else %}
+  <a class="btn btn-outline-success mx-auto" href="/become-a-renter" style="max-width: 20em">
+    Become a Renter
+  </a>
+{% endif %}
+
+{% if user.is_host %}
+  <a class="btn btn-success mx-auto" href="/my-listings" style="max-width: 20em">
+    My Listings
+  </a>
+{% else %}
+  <a class="btn btn-outline-success mx-auto" href="/become-a-host" style="max-width: 20em">
+    Become a Host
+  </a>
+{% endif %}
+  
+<hr/>
+
+<a class="btn btn-dark mx-auto" href="/my-profile" style="max-width: 20em">
+  My Profile
+</a>
 
 <hr/>
 
-<a class="btn btn-dark mx-auto" href="/my-profile" style="max-width: 20em"
-  >My Profile</a
->
-
-<hr/>
-
-<a class="btn btn-outline-dark mx-auto" href="/reports" style="max-width: 20em"
-  >System Reports</a
->
+<a class="btn btn-outline-dark mx-auto" href="/reports" style="max-width: 20em">
+  System Reports
+</a>
 
 {% endblock %}

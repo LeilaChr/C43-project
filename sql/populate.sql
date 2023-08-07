@@ -13,8 +13,8 @@ VALUES
 
 INSERT IGNORE INTO Hosts(user_id)
 VALUES (1), (2);
-INSERT IGNORE INTO Renters(user_id)
-VALUES (3), (4), (5), (6);
+INSERT IGNORE INTO Renters(user_id, card_num)
+VALUES (3, '1234123412341234'), (4, '5678567856785678'), (5, '9999888877776666'), (6, '5555888877775555');
 
 INSERT IGNORE INTO Listings(id, owner_id, country, city, postal, address, lat, lon, type, amenities)
 VALUES

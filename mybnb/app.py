@@ -161,7 +161,45 @@ def log_in():
 def dashboard():
     return render_template(
         'dashboard.html',
-        user=tables.users.current()
+        user=tables.users.current(),
+    )
+
+@app.route('/become-a-renter', methods=['GET', 'POST'])
+def become_a_renter():
+    class Form(FlaskForm):
+        card_num = StringField('Credit Card Number', validators=[Regexp(sanitize.card_num_pattern, 0, 'Must have the form xxxx-xxxx-xxxx-xxxx.')])
+
+        submit = SubmitField('Submit')
+
+    def on_submit(form):
+        tables.users.become_renter(sanitize.card_num(form.card_num.data))
+        flash('You are now a renter!', 'success')
+
+    return form_endpoint(
+        Form, 'become-a-renter.html',
+        on_submit=on_submit,
+        next_location='/dashboard',
+        template_args={
+            'user': tables.users.current()
+        }
+    )
+
+@app.route('/become-a-host', methods=['GET', 'POST'])
+def become_a_host():
+    class Form(FlaskForm):
+        submit = SubmitField('I Agree')
+
+    def on_submit(form):
+        tables.users.become_host()
+        flash('You are now a host!', 'success')
+
+    return form_endpoint(
+        Form, 'become-a-host.html',
+        on_submit=on_submit,
+        next_location='/dashboard',
+        template_args={
+            'user': tables.users.current()
+        }
     )
 
 @app.route('/my-profile', methods=['GET', 'POST'])
