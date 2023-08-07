@@ -16,6 +16,7 @@ $ mysql
 mysql> source sql/drop.sql
 mysql> source sql/create.sql
 mysql> source sql/populate.sql
+```
 
 ## Start server
 
