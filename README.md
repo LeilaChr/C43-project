@@ -9,6 +9,14 @@ poetry install
 poetry run python install_nltk.py
 ```
 
+## Populate database
+
+```
+$ mysql
+mysql> source sql/drop.sql
+mysql> source sql/create.sql
+mysql> source sql/populate.sql
+
 ## Start server
 
 Choose one:
