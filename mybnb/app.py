@@ -349,12 +349,50 @@ def listing_edit(id):
 @app.route('/my-listings/<id>/schedule')
 def listing_schedule(id):
     listing = tables.listings.for_id(id)
+    today = datetime.now().date()
+    two_weeks_ago = today - timedelta(days=15)
 
     return render_template(
         'listing-schedule.html',
         user=tables.users.current(),
         listing=listing,
-        slots=tables.booking_slots.all_for_listing(listing)
+        slots=tables.booking_slots.all_for_listing(listing),
+        pastslots=tables.booking_slots.past_slots_for_listing(listing),
+        two_weeks_ago=two_weeks_ago
+    )
+
+@app.route('/my-listings/<listing_id>/schedule/<renter_id>/rate-renter', methods=['POST'])
+def rate_renter(listing_id, renter_id):
+    class Form(FlaskForm):
+        rating = FloatField('Rating', render_kw={"placeholder": "ratings are between 0 and 5"})
+        comment = StringField('Comment', render_kw={"placeholder": "Amazing!"})
+
+        submit = SubmitField('Submit Comments and Rating', render_kw={'class': 'btn-primary'})
+
+    current_user = tables.users.current()
+
+    def on_submit(form):
+        tables.user_comments.renter_comments(
+            current_user.id,
+            renter_id,
+            form.comment.data,
+            form.rating.data
+        )
+        flash('Rating submitted.', 'success')
+
+    form = Form()
+    if not form.is_submitted():
+        del form.id
+
+    return form_endpoint(
+        form, 'renter-rate.html',
+        on_submit=on_submit,
+        next_location=f'/my-listings/{listing_id}/schedule',
+        template_args={
+            'user': current_user,
+            'renter': tables.users.for_id(renter_id),
+            'listing_id': listing_id
+        }
     )
 
 @app.route('/my-listings/<listing_id>/schedule/<slot_id>/delete', methods=['POST'])

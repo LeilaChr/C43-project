@@ -37,7 +37,20 @@ def all_for_listing(listing: listings.Listing):
             FROM BookingSlots S
             LEFT JOIN Availability A ON A.slot_id = S.id AND NOT A.retracted
             LEFT JOIN Bookings B ON B.availability_id = A.id AND NOT B.cancelled
-            WHERE listing_id = %(listing_id)s
+            WHERE listing_id = %(listing_id)s AND date >= CURDATE()
+        ''',
+        listing_id=listing.id
+    ):
+        yield BookingSlot.from_record(slot, listing=listing)
+
+def past_slots_for_listing(listing: listings.Listing):
+    for slot in query(
+        '''
+            SELECT S.id, S.listing_id, S.date, A.rental_price, B.renter_id
+            FROM BookingSlots S
+            LEFT JOIN Availability A ON A.slot_id = S.id AND NOT A.retracted
+            LEFT JOIN Bookings B ON B.availability_id = A.id AND NOT B.cancelled
+            WHERE listing_id = %(listing_id)s AND date < CURDATE() AND renter_id IS NOT NULL
         ''',
         listing_id=listing.id
     ):

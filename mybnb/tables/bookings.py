@@ -55,6 +55,7 @@ def rentals_for_id(id):
             LEFT JOIN BookingSlots B ON B.id = slot_id
             LEFT JOIN Listings L ON L.id = B.listing_id
             WHERE renter_id = %(id)s AND cancelled = 0 AND date >= CURRENT_DATE()
+            ORDER BY date ASC
         ''',
         id=id
     ).fetchall()
@@ -70,6 +71,7 @@ def past_rentals_for_id(id):
             LEFT JOIN BookingSlots B ON B.id = slot_id
             LEFT JOIN Listings L ON L.id = B.listing_id
             WHERE renter_id = %(id)s AND cancelled = 0 AND date < CURRENT_DATE()
+            ORDER BY date DESC
         ''',
         id=id
     ).fetchall()

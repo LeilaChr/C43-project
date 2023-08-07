@@ -1,0 +1,26 @@
+{% extends 'layouts/form.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}
+Rate Renter {{ renter.name }} &ndash; MyBnB
+{% endblock %}
+
+{% block top %}
+
+<div class="d-flex flex-column mb-4">
+  <a class="btn btn-outline-primary" href="/my-listings/{{ listing_id }}/schedule">← Schedule Listing</a>
+</div>
+
+<h1>Rate Renter {{ renter.name }}</h1>
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block form %}
+
+{{ render_form(form) }}
+
+{% endblock %}

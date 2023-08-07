@@ -50,6 +50,25 @@ Schedule Listing &ndash; MyBnB
       </div>
     </li>
   {% endfor %}
+
+  <h2>Past Bookings</h2>
+
+  {% for pastslot in pastslots %}
+  <li class="card">
+    <div class="card-body d-flex flex-row align-items-baseline justify-content-between">
+      <h6 class="card-title">
+          <span class="text-info">{{ pastslot.date }} &ndash; {{ "${:,.0f}".format(pastslot.rental_price) }}/night &ndash; <strong>Booked</strong></span>
+      </h6>
+      <form class="btn-group ms-4">
+        {% if pastslot.date > two_weeks_ago %}
+          <button type="submit" formaction="/my-listings/{{ listing.id }}/schedule/{{ pastslot.renter_id }}/rate-renter" formmethod="POST" class="btn btn-sm btn-outline-dark ps-3 pe-3">Rate Renter</button>
+        {% else %}
+          <button type="submit" formaction="#" disabled class="btn btn-sm btn-outline-danger ps-3 pe-3">Can't Rate Renter</button>
+        {% endif %}
+      </form>
+    </div>
+  </li>
+{% endfor %}
 </ul>
 
 <form class="btn-group">
