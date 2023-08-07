@@ -427,8 +427,8 @@ def listing_schedule_slot_set_price(listing_id, slot_id):
     listing = slot.listing
 
     def on_submit(form):
-        if slot.date <= datetime.now().date() + timedelta(days=1):
-            flash('Can only change price for a day in the future.', 'danger')
+        if slot.date < date.today():
+            flash('Cannot change price for a day in the past.', 'danger')
             return
     
         tables.booking_slots.update(
