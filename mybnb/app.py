@@ -7,7 +7,8 @@ from wtforms import StringField, PasswordField, IntegerField, FloatField, Select
 from wtforms.validators import DataRequired, Optional, Length, Regexp, NumberRange, ValidationError
 from datetime import date, datetime, timedelta
 
-from . import tables, sanitize, reports
+from . import tables, sanitize, reports, host_toolkit
+from .consts import AMENITIES_CHOICES, TYPE_CHOICES
 
 app = Flask(__name__)
 app.secret_key = 'B5F61F92-EADD-4952-A165-A39568B83603'
@@ -16,56 +17,6 @@ app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
 Bootstrap5(app)
-
-
-TYPE_CHOICES = [
-    'Apartment',
-    'House',
-    'Bed and breakfast',
-    'Boutique hotel',
-    'Bungalow',
-    'Cabin',
-    'Chalet',
-    'Condominium',
-    'Cottage',
-    'Guest suite',
-    'Guesthouse',
-    'Hostel',
-    'Hotel',
-    'Kezhan',
-    'Loft',
-    'Resort',
-    'Serviced apartment',
-    'Townhouse',
-    'Villa',
-]
-AMENITIES_CHOICES = [
-    'Wifi',
-    'Kitchen',
-    'Washer',
-    'Air conditioning',
-    'Iron',
-    'Free parking',
-    'Dryer',
-    'Heating',
-    'Dedicated workspace',
-    'TV',
-    'Hair dryer',
-    'Pool',
-    'Hot tub',
-    'EV charger',
-    'Crib',
-    'Gym',
-    'BBQ grill',
-    'Breakfast',
-    'Indoor fireplace',
-    'Smoking allowed',
-    'Beachfront',
-    'Waterfront',
-    'Ski-in/ski-out',
-    'Smoke alarm',
-    'Carbon monoxide alarm',
-]
 
 
 def form_endpoint(form, template_path: str, on_submit: callable, next_location: str = None, template_args: dict = {}):
@@ -490,7 +441,9 @@ def listing_schedule_slot_set_price(listing_id, slot_id):
         template_args={
             'user': tables.users.current(),
             'listing': listing,
-            'slot': slot
+            'slot': slot,
+            'price_suggestion': host_toolkit.suggest_price(listing),
+            'amenity_suggestions': host_toolkit.suggest_amenities(listing)
         }
     )
 

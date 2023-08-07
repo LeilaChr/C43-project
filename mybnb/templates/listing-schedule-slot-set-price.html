@@ -27,3 +27,49 @@ Set Listing Price &ndash; MyBnB
 {{ render_form(form) }}
 
 {% endblock %}
+
+{% block content_below %}
+
+<hr/>
+
+<h2 class="text-info">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16" style="transform: scale(1.75)">
+    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+  </svg>
+</h2>
+<h3>Host Toolkit</h3>
+
+<h5 class="mt-4">Suggested price</h5>
+
+<p>Based on other listings on the market, we suggest you price this listing at:</p>
+
+<p><b>{{ "${:,.2f}".format(price_suggestion) }}</b></p>
+
+<p><small>Computed as the mean price of other scheduled listings, <br/> weighted by number of common amenities.</small></p>
+
+<h5 class="mt-4">Suggested amenities</h5>
+
+<p>We suggest you add the following amenities to increase your revenue from this listing.</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Amenity</th>
+      <th scope="col">Expected Revenue Increase</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for amenity_suggestion in amenity_suggestions %}
+      <tr>
+        <td>{{ amenity_suggestion.amenity }}</td>
+        <td>{{ "${:,.2f}".format(amenity_suggestion.expected_revenue_increase) }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p><small>Expected revenue increase is computed as the suggested price <strong>with</strong> <br/> the amenity, minus the current suggested price (<strong>without</strong> the amenity).</small></p>
+
+<p><a class="btn btn-sm btn-outline-success" href="/my-listings/{{ listing.id }}/edit">Edit Listing</a></p>
+
+{% endblock %}
