@@ -609,7 +609,7 @@ def listings():
         sort_by_price = SelectField('Sort By Price', validators=[Optional()], choices=['None', 'High To Low', 'Low To High'])
 
         postal_code = StringField('Postal Code (Same and Adjacent)', validators=[Optional(), Length(6, 6)], render_kw={"placeholder": "A1B2C3"})
-        address = StringField('Address (Exact Match)', validators=[Optional()], render_kw={"placeholder": "123 Happy St, Scarborough, ON"})
+        address = StringField('Address (Exact Match)', validators=[Optional()], render_kw={"placeholder": "66 Gerrard St E"})
 
         start_date = StringField('Booking Period Start', validators=[Optional()], render_kw={"placeholder": "YYYY-MM-DD"})
         end_date = StringField('Booking Period End', validators=[Optional()], render_kw={"placeholder": "YYYY-MM-DD"})

@@ -19,11 +19,29 @@ Listings &ndash; MyBnB
 
 <h2>Search</h2>
 
+{% endblock %}
+
+{% block form %}
+{{ render_form(form) }}
+{% endblock %}
+
+{% block content_below %}
+
+{% if listings %}
+  <script>
+    location.hash = '#results';
+  </script>
+{% endif %}
+
+<hr/>
+
+<h2 id="results" class="mt-4">Results</h2>
+
 <ul class="ps-0">
   {% for listing in listings %}
     <li class="card">
       <div class="card-body d-flex flex-row align-items-baseline justify-content-between">
-        <h6 class="card-title d-flex flex-column align-items-center">
+        <h6 class="card-title d-flex flex-column align-items-start">
           <span class="text-info">{{ listing.date }} &ndash; {{ "${:,.0f}".format(listing.rental_price) }}/night</span>
           <span class="text-info">At the location {{ listing.address }}, {{ listing.city }}, {{ listing.country }}, {{ listing.postal }}</span>
           {% if listing.type == None %}
@@ -32,7 +50,7 @@ Listings &ndash; MyBnB
           <span class="text-info">With Amenities {{ listing.amenities }}</span>
           <span class="text-info">Listing Type: {{ listing.type }}</span> 
           {% endif %}
-      </h6>
+        </h6>
         <form class="btn-group ms-4">
           <a href="/listings/{{ listing.availability_id }}/book" class="btn btn-sm btn-outline-primary ps-3 pe-3">Book</a>
         </form>
@@ -41,8 +59,4 @@ Listings &ndash; MyBnB
   {% endfor %}
 </ul>
 
-{% endblock %}
-
-{% block form %}
-{{ render_form(form) }}
 {% endblock %}
