@@ -256,4 +256,5 @@ def top_noun_phrases_in_listing_comments():
     return [
         TopNP(NP=np, Count=count)
         for (np, count) in sorted(top_nps.items(), key=lambda item: item[1], reverse=True)
+        if np
     ]
