@@ -96,7 +96,27 @@ VALUES
   (61, 12, DATE_ADD(CURDATE(), INTERVAL 6 DAY)),
   (62, 12, DATE_SUB(CURDATE(), INTERVAL 3 DAY)),
   (63, 12, DATE_SUB(CURDATE(), INTERVAL 2 DAY)),
-  (64, 12, DATE_SUB(CURDATE(), INTERVAL 1 DAY));
+  (64, 12, DATE_SUB(CURDATE(), INTERVAL 1 DAY)),
+  (65, 1, DATE_SUB(CURDATE(), INTERVAL 1 DAY)),
+  (66, 1, DATE_SUB(CURDATE(), INTERVAL 2 DAY)),
+  (67, 2, DATE_SUB(CURDATE(), INTERVAL 1 DAY)),
+  (68, 2, DATE_SUB(CURDATE(), INTERVAL 2 DAY)),
+  (69, 3, DATE_SUB(CURDATE(), INTERVAL 2 DAY)),
+  (70, 3, DATE_SUB(CURDATE(), INTERVAL 3 DAY)),
+  (71, 4, DATE_SUB(CURDATE(), INTERVAL 3 DAY)),
+  (72, 4, DATE_SUB(CURDATE(), INTERVAL 4 DAY)),
+  (73, 5, DATE_SUB(CURDATE(), INTERVAL 3 DAY)),
+  (74, 5, DATE_SUB(CURDATE(), INTERVAL 4 DAY)),
+  (75, 6, DATE_SUB(CURDATE(), INTERVAL 4 DAY)),
+  (76, 6, DATE_SUB(CURDATE(), INTERVAL 5 DAY)),
+  (77, 7, DATE_SUB(CURDATE(), INTERVAL 9 DAY)),
+  (78, 7, DATE_SUB(CURDATE(), INTERVAL 14 DAY)),
+  (79, 7, DATE_SUB(CURDATE(), INTERVAL 16 DAY)),
+  (80, 8, DATE_SUB(CURDATE(), INTERVAL 10 DAY)),
+  (81, 8, DATE_SUB(CURDATE(), INTERVAL 11 DAY)),
+  (82, 8, DATE_SUB(CURDATE(), INTERVAL 12 DAY)),
+  (83, 8, DATE_SUB(CURDATE(), INTERVAL 15 DAY)),
+  (84, 9, DATE_SUB(CURDATE(), INTERVAL 7 DAY));
 
 INSERT IGNORE INTO Availability(id, slot_id, rental_price)
 VALUES
@@ -163,14 +183,54 @@ VALUES
   (61, 61, 500),
   (62, 62, 505),
   (63, 63, 510),
-  (64, 64, 515);
+  (64, 64, 515),
+  (65, 65, 520),
+  (66, 66, 525),
+  (67, 67, 530),
+  (68, 68, 535),
+  (69, 69, 540),
+  (70, 70, 545),
+  (71, 71, 550),
+  (72, 72, 555),
+  (73, 73, 560),
+  (74, 74, 565),
+  (75, 75, 570),
+  (76, 76, 575),
+  (77, 77, 580),
+  (78, 78, 585),
+  (79, 79, 590),
+  (80, 80, 595),
+  (81, 81, 600),
+  (82, 82, 605),
+  (83, 83, 610),
+  (84, 84, 615);
 
 INSERT IGNORE INTO Bookings(availability_id, renter_id)
 VALUES
   (61, 3),
   (62, 3),
   (63, 3),
-  (64, 4);
+  (64, 4),
+  (65, 3),
+  (66, 3),
+  (67, 3),
+  (68, 4),
+  (69, 5),
+  (70, 4),
+  (71, 5),
+  (72, 5),
+  (73, 4),
+  (74, 4),
+  (75, 4),
+  (76, 4),
+  (77, 5),
+  (78, 5),
+  (79, 3),
+  (80, 5),
+  (81, 3),
+  (82, 3),
+  (83, 4),
+  (84, 4);
 
 INSERT IGNORE INTO ListingComments(renter_id, listing_id, comment, rating)
 VALUES
